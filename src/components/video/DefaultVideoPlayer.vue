@@ -4,6 +4,7 @@
         @mouseenter="showControls = true"
         @mousemove="toggleVideoControlsOnForTwoSeconds"
         @mouseleave="toggleVideoControlsOff"
+        ref="videoPlayerContainer"
     >
         <video
             class="video-player"
@@ -11,21 +12,22 @@
             @click="togglePlay"
         ></video>
         <div class="video-controls" :class="{ hidden: !showControls }">
-            <button class="play-button" @click="togglePlay">
-                {{ videoIsPlayed ? 'Pause' : 'Play' }}
-            </button>
             <input
+                class="progress-bar"
                 type="range"
                 min="0"
                 :max="duration"
                 :value="currentTime"
                 @input="seekVideo"
             />
+            <div class="button-container">
+                <button @click="togglePlay">
+                    {{ videoIsPlayed ? 'Pause' : 'Play' }}
+                </button>
 
-            <div class="time">{{ currentTimeStr }} / {{ durationStr }}</div>
-            <button class="control-button" @click="toggleFullScreen">
-                full screen
-            </button>
+                <div class="time">{{ currentTimeStr }} / {{ durationStr }}</div>
+                <button @click="toggleFullScreen">full screen</button>
+            </div>
         </div>
     </div>
 </template>
@@ -41,12 +43,13 @@ const currentTimeStr = ref('00:00');
 const showControls = ref(true);
 const toggleInProgress = ref(false);
 const mouseMoving = ref(false);
+const videoPlayerContainer = ref(null);
 
 const toggleFullScreen = () => {
     if (document.fullscreenElement) {
         document.exitFullscreen();
     } else {
-        videoPlayer.value.requestFullscreen();
+        videoPlayerContainer.value.requestFullscreen();
     }
 };
 
@@ -144,8 +147,8 @@ onMounted(() => {
 }
 
 .video-player {
-    display: block;
     width: 100%;
+    display: block;
 }
 
 /* Video player control bar */
@@ -153,14 +156,24 @@ onMounted(() => {
     background-color: rgba(0, 0, 0, 0.5);
     color: #fff;
     display: flex;
-    align-items: center;
-    height: 50px;
-    padding: 0 10px;
+    flex-direction: column;
+    height: 10%;
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
     box-sizing: border-box;
+}
+
+/* Video player control bar */
+.button-container {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 100%;
+    width: 100%;
 }
 
 /* Control buttons */
@@ -169,29 +182,19 @@ onMounted(() => {
     border: none;
     color: #fff;
     cursor: pointer;
-    font-size: 20px;
-    margin-right: 10px;
+    font-size: 2vw;
+    display: flex;
+    padding: 0 1% 0 1%;
 }
 
-input[type='range'] {
-    width: 80%;
-    margin: 0;
-    padding: 0;
+.progress-bar {
+    width: 100%;
     cursor: pointer;
 }
 
 .time {
-    margin-left: 1%;
-    margin-right: 1%;
-}
-
-.video-player-container:fullscreen {
-    width: 100vw;
-    height: 100vh;
-}
-
-.video-player:fullscreen {
-    width: 100%;
-    height: 100%;
+    align-items: center;
+    font-size: 2vw;
+    display: flex;
 }
 </style>

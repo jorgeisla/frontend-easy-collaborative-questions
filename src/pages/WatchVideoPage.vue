@@ -1,6 +1,6 @@
 <template>
-    <div><VideoPlayer /></div>
+    <div><DefaultVideoPlayer /></div>
 </template>
 <script setup>
-import VideoPlayer from 'components/video/VideoPlayer.vue';
+import DefaultVideoPlayer from 'src/components/video/DefaultVideoPlayer.vue';
 </script>
