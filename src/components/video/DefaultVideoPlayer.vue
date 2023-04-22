@@ -3,7 +3,7 @@
         class="video-player-container"
         @mouseenter="showControls = true"
         @mousemove="toggleVideoControlsOnForTwoSeconds"
-        @mouseleave="toggleVideoControlsOff"
+        @mouseleave="toggleVideoControlsOffInstantly"
         ref="videoPlayerContainer"
     >
         <video
@@ -44,6 +44,7 @@ const showControls = ref(true);
 const toggleInProgress = ref(false);
 const mouseMoving = ref(false);
 const videoPlayerContainer = ref(null);
+const timeOuts = ref([]);
 
 const toggleFullScreen = () => {
     if (document.fullscreenElement) {
@@ -76,33 +77,50 @@ const handlePause = () => {
     videoPlayer.value.pause();
     showControls.value = true;
     videoIsPlayed.value = false;
+    clearAllTimeOuts();
     console.log('Video paused');
 };
 
 const toggleVideoControlsOff = () => {
     if (!toggleInProgress.value) {
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
             if (videoIsPlayed.value) {
                 showControls.value = false;
             }
             toggleInProgress.value = false;
         }, 2000);
+        timeOuts.value.push(timeoutId);
+    }
+};
+
+const toggleVideoControlsOffInstantly = () => {
+    if (videoIsPlayed.value) {
+        showControls.value = false;
     }
 };
 
 const toggleVideoControlsOnForTwoSeconds = () => {
     setMouseMove();
+    clearAllTimeOuts();
     mouseMoving.value = true;
     if (!toggleInProgress.value) {
         toggleInProgress.value = true;
         showControls.value = true;
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
             if (videoIsPlayed.value & !mouseMoving.value) {
                 showControls.value = false;
             }
             toggleInProgress.value = false;
-        }, 2000);
+        }, 1000);
+        timeOuts.value.push(timeoutId);
     }
+};
+
+const clearAllTimeOuts = () => {
+    for (const id of timeOuts.value) {
+        clearTimeout(id);
+    }
+    toggleInProgress.value = false;
 };
 
 const setMouseMove = () => {
