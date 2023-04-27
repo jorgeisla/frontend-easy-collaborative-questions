@@ -162,6 +162,7 @@ onMounted(() => {
 .video-player-container {
     position: relative;
     display: inline-block;
+    text-align: center;
 }
 
 .video-player {
