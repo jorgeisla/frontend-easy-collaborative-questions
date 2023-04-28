@@ -31,10 +31,10 @@
         </div>
     </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue';
 
-const videoPlayer = ref(null);
+const videoPlayer = ref();
 const videoIsPlayed = ref(false);
 const duration = ref(0);
 const durationStr = ref('00:00');
@@ -43,8 +43,8 @@ const currentTimeStr = ref('00:00');
 const showControls = ref(true);
 const toggleInProgress = ref(false);
 const mouseMoving = ref(false);
-const videoPlayerContainer = ref(null);
-const timeOuts = ref([]);
+const videoPlayerContainer = ref();
+const timeOuts = ref();
 
 const toggleFullScreen = () => {
     if (document.fullscreenElement) {
@@ -54,7 +54,7 @@ const toggleFullScreen = () => {
     }
 };
 
-const seekVideo = (event) => {
+const seekVideo = (event: any) => {
     videoPlayer.value.currentTime = event.target.value;
 };
 
@@ -107,7 +107,7 @@ const toggleVideoControlsOnForTwoSeconds = () => {
         toggleInProgress.value = true;
         showControls.value = true;
         const timeoutId = setTimeout(() => {
-            if (videoIsPlayed.value & !mouseMoving.value) {
+            if (videoIsPlayed.value && !mouseMoving.value) {
                 showControls.value = false;
             }
             toggleInProgress.value = false;
@@ -143,7 +143,7 @@ const setDuration = () => {
     durationStr.value = updatedDuration;
 };
 
-const formatTime = (time) => {
+const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes.toString().padStart(2, '0')}:${seconds

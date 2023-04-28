@@ -5,11 +5,17 @@
         </div>
     </div>
 
-    <div><QuestionPopUp :alert="state.alert" :question="question" /></div>
-    <q-btn flat label="OK" color="primary" @click="toggleDialogOn()"></q-btn>
+    <div>
+        <QuestionPopUp
+            :state="state.alert"
+            :question="question"
+            :answers="answers"
+        />
+    </div>
+    <q-btn label="OK" color="primary" @click="toggleDialogOn()"></q-btn>
 </template>
-<script setup>
-import DefaultVideoPlayer from 'src/components/video/DefaultVideoPlayer.vue';
+<script setup lang="ts">
+import DefaultVideoPlayer from 'src/qucomponents/video/DefaultVideoPlayer.vue';
 import QuestionPopUp from 'src/components/pop-ups/QuestionPopUp.vue';
 import { reactive, provide } from 'vue';
 
@@ -17,7 +23,10 @@ const state = reactive({
     alert: true,
 });
 
+const answers = reactive([Object]);
+
 provide('state', state);
+provide('answers', answers);
 
 const toggleDialogOn = () => {
     console.log(state.alert);

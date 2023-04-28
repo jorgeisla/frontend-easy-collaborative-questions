@@ -22,8 +22,7 @@
 
             <q-card-actions align="right">
                 <q-btn
-                    flat
-                    label="OK"
+                    label="Responder"
                     color="primary"
                     @click="toggleDialogOff()"
                 />
@@ -31,18 +30,21 @@
         </q-card>
     </q-dialog>
 </template>
-<script setup>
+<script setup lang="ts">
 import { inject, ref } from 'vue';
 
-const props = defineProps({
-    alert: Boolean,
-    question: Object,
-});
+const props = defineProps<{
+    state: boolean;
+    question: {
+        pregunta: string;
+        opciones: { value: number; label: string }[];
+    };
+    answers: object[];
+}>();
 
-const state = inject('state');
+const state: any = inject('state');
 const shape = ref('line');
 const toggleDialogOff = () => {
-    console.log(state.alert);
     state.alert = false;
 };
 </script>
