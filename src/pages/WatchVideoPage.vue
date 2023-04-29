@@ -15,7 +15,7 @@
     <q-btn label="OK" color="primary" @click="toggleDialogOn()"></q-btn>
 </template>
 <script setup lang="ts">
-import DefaultVideoPlayer from 'src/qucomponents/video/DefaultVideoPlayer.vue';
+import DefaultVideoPlayer from 'src/components/video/DefaultVideoPlayer.vue';
 import QuestionPopUp from 'src/components/pop-ups/QuestionPopUp.vue';
 import { reactive, provide } from 'vue';
 
