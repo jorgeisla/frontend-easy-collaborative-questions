@@ -4,6 +4,7 @@
         @mouseenter="showControls = true"
         @mousemove="toggleVideoControlsOnForTwoSeconds"
         @mouseleave="toggleVideoControlsOffInstantly"
+        @fullscreenchange="handleChangeFullScreen"
         ref="videoPlayerContainer"
     >
         <video
@@ -21,12 +22,34 @@
                 @input="seekVideo"
             />
             <div class="button-container">
-                <button @click="togglePlay">
-                    {{ videoIsPlayed ? 'Pause' : 'Play' }}
-                </button>
+                <div class="button-container-left">
+                    <button @click="togglePlay">
+                        <div v-if="videoIsPlayed">
+                            <i class="fa-solid fa-pause"></i>
+                        </div>
+                        <div v-else-if="!videoIsPlayed">
+                            <i class="fa-solid fa-play"></i>
+                        </div>
+                    </button>
 
-                <div class="time">{{ currentTimeStr }} / {{ durationStr }}</div>
-                <button @click="toggleFullScreen">full screen</button>
+                    <div class="time">
+                        {{ currentTimeStr }} / {{ durationStr }}
+                    </div>
+                </div>
+                <div class="button-container-right">
+                    <button @click="toggleFullScreen">
+                        <div v-if="!isFullScreen">
+                            <i
+                                class="fa-solid fa-up-right-and-down-left-from-center"
+                            ></i>
+                        </div>
+                        <div v-if="isFullScreen">
+                            <i
+                                class="fa-solid fa-down-left-and-up-right-to-center"
+                            ></i>
+                        </div>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -44,7 +67,8 @@ const showControls = ref(true);
 const toggleInProgress = ref(false);
 const mouseMoving = ref(false);
 const videoPlayerContainer = ref();
-const timeOuts = ref();
+const timeOuts: any[] = [];
+const isFullScreen = ref(false);
 
 const toggleFullScreen = () => {
     if (document.fullscreenElement) {
@@ -52,6 +76,10 @@ const toggleFullScreen = () => {
     } else {
         videoPlayerContainer.value.requestFullscreen();
     }
+};
+
+const handleChangeFullScreen = () => {
+    isFullScreen.value = !isFullScreen.value;
 };
 
 const seekVideo = (event: any) => {
@@ -89,7 +117,7 @@ const toggleVideoControlsOff = () => {
             }
             toggleInProgress.value = false;
         }, 2000);
-        timeOuts.value.push(timeoutId);
+        timeOuts.push(timeoutId);
     }
 };
 
@@ -111,13 +139,13 @@ const toggleVideoControlsOnForTwoSeconds = () => {
                 showControls.value = false;
             }
             toggleInProgress.value = false;
-        }, 1000);
-        timeOuts.value.push(timeoutId);
+        }, 2000);
+        timeOuts.push(timeoutId);
     }
 };
 
 const clearAllTimeOuts = () => {
-    for (const id of timeOuts.value) {
+    for (const id of timeOuts) {
         clearTimeout(id);
     }
     toggleInProgress.value = false;
@@ -195,6 +223,23 @@ onMounted(() => {
     width: 100%;
 }
 
+.button-container-left {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    white-space: nowrap;
+    padding-right: 2%;
+    padding-left: 2%;
+}
+
+.button-container-right {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-right: 2%;
+    padding-left: 2%;
+}
+
 /* Control buttons */
 .video-controls button {
     background-color: transparent;
@@ -214,6 +259,7 @@ onMounted(() => {
 .time {
     align-items: center;
     font-size: 2vw;
-    display: flex;
+    display: inline;
+    padding-left: 5%;
 }
 </style>
