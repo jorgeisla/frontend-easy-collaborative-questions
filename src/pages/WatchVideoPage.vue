@@ -23,13 +23,12 @@ const state = reactive({
     alert: true,
 });
 
-const answers = reactive([Object]);
+const answers = reactive({});
 
 provide('state', state);
 provide('answers', answers);
 
 const toggleDialogOn = () => {
-    console.log(state.alert);
     state.alert = true;
 };
 
@@ -54,5 +53,6 @@ const question = {
             value: 3,
         },
     ],
+    id: 1,
 };
 </script>

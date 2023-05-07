@@ -35,6 +35,15 @@
                     <div class="time">
                         {{ currentTimeStr }} / {{ durationStr }}
                     </div>
+                    <input
+                        class="volume-input"
+                        style="margin-left: 5%"
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        v-model="volume"
+                    />
                 </div>
                 <div class="button-container-right">
                     <button @click="toggleFullScreen">
@@ -55,7 +64,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watchEffect } from 'vue';
 
 const videoPlayer = ref();
 const videoIsPlayed = ref(false);
@@ -69,6 +78,7 @@ const mouseMoving = ref(false);
 const videoPlayerContainer = ref();
 const timeOuts: any[] = [];
 const isFullScreen = ref(false);
+const volume = ref(1);
 
 const toggleFullScreen = () => {
     if (document.fullscreenElement) {
@@ -183,6 +193,9 @@ onMounted(() => {
     videoPlayer.value.src = './test.mp4';
     videoPlayer.value.addEventListener('timeupdate', updateProgress);
     videoPlayer.value.addEventListener('loadedmetadata', setDuration);
+    watchEffect(() => {
+        videoPlayer.value.volume = volume.value;
+    });
 });
 </script>
 
@@ -225,19 +238,19 @@ onMounted(() => {
 
 .button-container-left {
     display: flex;
-    flex-direction: row;
     align-items: center;
     white-space: nowrap;
     padding-right: 2%;
     padding-left: 2%;
+    width: 100%;
 }
 
 .button-container-right {
     display: flex;
-    flex-direction: row;
-    align-items: center;
     padding-right: 2%;
     padding-left: 2%;
+    width: 100%;
+    justify-content: end;
 }
 
 /* Control buttons */
@@ -248,7 +261,6 @@ onMounted(() => {
     cursor: pointer;
     font-size: 2vw;
     display: flex;
-    padding: 0 1% 0 1%;
 }
 
 .progress-bar {
@@ -261,5 +273,10 @@ onMounted(() => {
     font-size: 2vw;
     display: inline;
     padding-left: 5%;
+}
+
+.volume-input {
+    width: 30%;
+    cursor: pointer;
 }
 </style>

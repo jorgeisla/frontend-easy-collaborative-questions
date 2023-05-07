@@ -1,6 +1,6 @@
 <template>
     <q-dialog v-model="state.alert">
-        <q-card style="max-width: 60%">
+        <q-card style="max-width: 70%">
             <q-card-section>
                 <div class="text-h3 q-pa-md">{{ props.question.pregunta }}</div>
             </q-card-section>
@@ -11,7 +11,7 @@
                     :key="index"
                 >
                     <q-radio
-                        v-model="shape"
+                        v-model="selected"
                         size="lg"
                         :val="item.value"
                         :label="item.label"
@@ -34,17 +34,22 @@
 import { inject, ref } from 'vue';
 
 const props = defineProps<{
-    state: boolean;
     question: {
         pregunta: string;
         opciones: { value: number; label: string }[];
+        id: number;
     };
-    answers: object[];
 }>();
 
 const state: any = inject('state');
-const shape = ref('line');
+const answers: any = inject('answers');
+
+const selected = ref(answers[`${props.question.id}`] || '');
 const toggleDialogOff = () => {
+    console.log(selected.value);
     state.alert = false;
+    if (selected.value !== '') {
+        answers[`${props.question.id}`] = selected;
+    }
 };
 </script>
