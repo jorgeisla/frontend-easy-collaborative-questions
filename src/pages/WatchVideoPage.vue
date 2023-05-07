@@ -1,18 +1,20 @@
 <template>
     <div class="row">
         <div class="col" style="text-align: center">
-            <DefaultVideoPlayer />
+            <DefaultVideoPlayer
+                v-on:current-time-change="handleCurrentTimeChange"
+            />
         </div>
     </div>
 
     <div>
         <QuestionPopUp
-            :state="state.alert"
+            :state="state.popUp"
             :question="question"
             :answers="answers"
         />
     </div>
-    <q-btn label="OK" color="primary" @click="toggleDialogOn()"></q-btn>
+    <q-btn label="OK" color="primary" @click="togglePopUpOn()"></q-btn>
 </template>
 <script setup lang="ts">
 import DefaultVideoPlayer from 'src/components/video/DefaultVideoPlayer.vue';
@@ -20,7 +22,7 @@ import QuestionPopUp from 'src/components/pop-ups/QuestionPopUp.vue';
 import { reactive, provide } from 'vue';
 
 const state = reactive({
-    alert: true,
+    popUp: true,
 });
 
 const answers = reactive({});
@@ -28,9 +30,15 @@ const answers = reactive({});
 provide('state', state);
 provide('answers', answers);
 
-const toggleDialogOn = () => {
-    state.alert = true;
+const togglePopUpOn = () => {
+    state.popUp = true;
 };
+
+const questions = { 43: 1 };
+
+const questionsTimes = Object.keys(questions).map((time) => {
+    return parseInt(time);
+});
 
 const question = {
     pregunta:
@@ -54,5 +62,12 @@ const question = {
         },
     ],
     id: 1,
+    time: 43,
+};
+
+const handleCurrentTimeChange = (currentTime: number) => {
+    if (questionsTimes.includes(currentTime)) {
+        togglePopUpOn();
+    }
 };
 </script>

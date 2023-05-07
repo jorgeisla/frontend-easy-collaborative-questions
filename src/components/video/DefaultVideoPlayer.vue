@@ -64,7 +64,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ref, onMounted, watchEffect } from 'vue';
+import { ref, onMounted, watchEffect, inject } from 'vue';
 
 const videoPlayer = ref();
 const videoIsPlayed = ref(false);
@@ -79,6 +79,9 @@ const videoPlayerContainer = ref();
 const timeOuts: any[] = [];
 const isFullScreen = ref(false);
 const volume = ref(1);
+const state: any = inject('state');
+
+const emit = defineEmits<{ (e: 'current-time-change', val: number): number }>();
 
 const toggleFullScreen = () => {
     if (document.fullscreenElement) {
@@ -108,7 +111,6 @@ const handlePlay = () => {
     videoPlayer.value.play();
     videoIsPlayed.value = true;
     toggleVideoControlsOff();
-    console.log('Video played');
 };
 
 const handlePause = () => {
@@ -116,7 +118,6 @@ const handlePause = () => {
     showControls.value = true;
     videoIsPlayed.value = false;
     clearAllTimeOuts();
-    console.log('Video paused');
 };
 
 const toggleVideoControlsOff = () => {
@@ -173,6 +174,7 @@ const updateProgress = () => {
     const time = videoPlayer.value.currentTime;
     currentTime.value = videoPlayer.value.currentTime;
     currentTimeStr.value = formatTime(time);
+    emit('current-time-change', getSeconds(currentTime.value));
 };
 
 const setDuration = () => {
@@ -189,12 +191,26 @@ const formatTime = (time: number) => {
         .padStart(2, '0')}`;
 };
 
+const getSeconds = (time: number) => {
+    const seconds = Math.floor(time);
+    return seconds;
+};
+
+const handlePopUpActivation = () => {
+    if (state.popUp === true) {
+        handlePause();
+    }
+};
+
 onMounted(() => {
     videoPlayer.value.src = './test.mp4';
     videoPlayer.value.addEventListener('timeupdate', updateProgress);
     videoPlayer.value.addEventListener('loadedmetadata', setDuration);
     watchEffect(() => {
         videoPlayer.value.volume = volume.value;
+    });
+    watchEffect(() => {
+        handlePopUpActivation();
     });
 });
 </script>
@@ -250,7 +266,7 @@ onMounted(() => {
     padding-right: 2%;
     padding-left: 2%;
     width: 100%;
-    justify-content: end;
+    justify-content: flex-end;
 }
 
 /* Control buttons */
