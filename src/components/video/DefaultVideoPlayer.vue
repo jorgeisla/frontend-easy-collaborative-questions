@@ -80,6 +80,7 @@ const timeOuts: any[] = [];
 const isFullScreen = ref(false);
 const volume = ref(1);
 const state: any = inject('state');
+let previous_time = 1;
 
 const emit = defineEmits<{ (e: 'current-time-change', val: number): number }>();
 
@@ -171,10 +172,14 @@ const setMouseMove = () => {
 };
 
 const updateProgress = () => {
-    const time = videoPlayer.value.currentTime;
+    const time = Math.floor(videoPlayer.value.currentTime);
     currentTime.value = videoPlayer.value.currentTime;
     currentTimeStr.value = formatTime(time);
-    emit('current-time-change', getSeconds(currentTime.value));
+    console.log(previous_time, time);
+    if (previous_time !== time) {
+        emit('current-time-change', getSeconds(currentTime.value));
+    }
+    previous_time = time;
 };
 
 const setDuration = () => {

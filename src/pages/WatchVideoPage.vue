@@ -14,15 +14,15 @@
             :answers="answers"
         />
     </div>
-    <q-btn label="OK" color="primary" @click="togglePopUpOn()"></q-btn>
 </template>
 <script setup lang="ts">
 import DefaultVideoPlayer from 'src/components/video/DefaultVideoPlayer.vue';
 import QuestionPopUp from 'src/components/pop-ups/QuestionPopUp.vue';
-import { reactive, provide } from 'vue';
+import { reactive, provide, ref, Ref } from 'vue';
+import { Question } from 'src/models/video/pop-up';
 
 const state = reactive({
-    popUp: true,
+    popUp: false,
 });
 
 const answers = reactive({});
@@ -34,40 +34,106 @@ const togglePopUpOn = () => {
     state.popUp = true;
 };
 
-const questions = { 43: 1 };
+const question: Ref<Question | null> = ref(null);
+const questions = [
+    {
+        questioHeader:
+            'Título de prueba Título de pruebaTítulo de pruebaTítulo de pruebaTítulo de pruebaTítulo de pruebaTítulo de prueba',
+        answerOptions: [
+            {
+                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1',
+                value: 0,
+            },
+            {
+                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1 2',
+                value: 1,
+            },
+            {
+                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1 3',
+                value: 2,
+            },
+            {
+                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1 4',
+                value: 3,
+            },
+        ],
+        id: 1,
+        time: 43,
+    },
+    {
+        questioHeader:
+            'Título de prueba Título de pruebaTítulo de pruebaTítulo de pruebaTítulo de pruebaTítulo de pruebaTítulo de prueba',
+        answerOptions: [
+            {
+                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1',
+                value: 0,
+            },
+            {
+                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1 2',
+                value: 1,
+            },
+            {
+                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1 3',
+                value: 2,
+            },
+            {
+                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1 4',
+                value: 3,
+            },
+        ],
+        id: 1,
+        time: 50,
+    },
+    {
+        questioHeader:
+            'Título de prueba Título de pruebaTítulo de pruebaTítulo de pruebaTítulo de pruebaTítulo de pruebaTítulo de prueba',
+        answerOptions: [
+            {
+                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1',
+                value: 0,
+            },
+            {
+                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1 2',
+                value: 1,
+            },
+            {
+                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1 3',
+                value: 2,
+            },
+            {
+                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1 4',
+                value: 3,
+            },
+        ],
+        id: 1,
+        time: 30,
+    },
+];
+const timeAsKey = () => {
+    const timeAsKeyDict: { [key: number]: Question } = {};
+    questions.forEach((question: Question) => {
+        timeAsKeyDict[`${question.time}`] = question;
+    });
 
-const questionsTimes = Object.keys(questions).map((time) => {
-    return parseInt(time);
-});
-
-const question = {
-    pregunta:
-        'Título de prueba Título de pruebaTítulo de pruebaTítulo de pruebaTítulo de pruebaTítulo de pruebaTítulo de prueba',
-    opciones: [
-        {
-            label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1',
-            value: 0,
-        },
-        {
-            label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1 2',
-            value: 1,
-        },
-        {
-            label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1 3',
-            value: 2,
-        },
-        {
-            label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1 4',
-            value: 3,
-        },
-    ],
-    id: 1,
-    time: 43,
+    return timeAsKeyDict;
 };
 
+const getQuestionTimes = () => {
+    const questionTimes = questions.map((question: Question) => {
+        return question.time;
+    });
+
+    return questionTimes;
+};
+
+const questionTimes = getQuestionTimes();
+
 const handleCurrentTimeChange = (currentTime: number) => {
-    if (questionsTimes.includes(currentTime)) {
+    if (questionTimes.includes(currentTime)) {
+        question.value = timeAsKeyDictionary[currentTime];
         togglePopUpOn();
     }
 };
+
+const timeAsKeyDictionary = timeAsKey();
 </script>
