@@ -81,7 +81,7 @@ const questions = [
                 value: 3,
             },
         ],
-        id: 1,
+        id: 2,
         time: 50,
     },
     {
@@ -105,7 +105,7 @@ const questions = [
                 value: 3,
             },
         ],
-        id: 1,
+        id: 3,
         time: 30,
     },
 ];

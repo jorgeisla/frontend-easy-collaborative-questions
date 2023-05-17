@@ -175,7 +175,6 @@ const updateProgress = () => {
     const time = Math.floor(videoPlayer.value.currentTime);
     currentTime.value = videoPlayer.value.currentTime;
     currentTimeStr.value = formatTime(time);
-    console.log(previous_time, time);
     if (previous_time !== time) {
         emit('current-time-change', getSeconds(currentTime.value));
     }

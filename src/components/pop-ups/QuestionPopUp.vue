@@ -47,7 +47,8 @@ const selected = ref(answers[`${props.question?.id}`] || '');
 const toggleDialogOff = () => {
     state.popUp = false;
     if (selected.value !== '') {
-        answers[`${props.question?.id}`] = selected;
+        answers[`${props.question?.id}`] = selected.value;
     }
+    console.log(answers);
 };
 </script>
