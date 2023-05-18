@@ -46,6 +46,22 @@
                     />
                 </div>
                 <div class="button-container-right">
+                    <div style="padding-right: 10%">
+                        <q-select
+                            v-model="playbackRate"
+                            :options="playbackRateOptions"
+                            :value="1.0"
+                            dark
+                        >
+                            <template v-slot:prepend>
+                                <q-icon
+                                    name="fa-solid fa-gauge-high"
+                                    color="grey-4"
+                                    size="lg"
+                                />
+                            </template>
+                        </q-select>
+                    </div>
                     <button @click="toggleFullScreen">
                         <div v-if="!isFullScreen">
                             <i
@@ -80,7 +96,10 @@ const timeOuts: any[] = [];
 const isFullScreen = ref(false);
 const volume = ref(1);
 const state: any = inject('state');
+const playbackRate = ref(1.0);
 let previous_time = 1;
+
+const playbackRateOptions = ['0.5', '1.0', '1.5', '1.75', '2.0'];
 
 const emit = defineEmits<{ (e: 'current-time-change', val: number): number }>();
 
@@ -214,6 +233,9 @@ onMounted(() => {
         videoPlayer.value.volume = volume.value;
     });
     watchEffect(() => {
+        videoPlayer.value.playbackRate = playbackRate.value;
+    });
+    watchEffect(() => {
         handlePopUpActivation();
     });
 });
@@ -237,7 +259,7 @@ onMounted(() => {
     color: #fff;
     display: flex;
     flex-direction: column;
-    height: 10%;
+    height: 15%;
     position: absolute;
     bottom: 0;
     left: 0;
@@ -270,6 +292,7 @@ onMounted(() => {
     padding-right: 2%;
     padding-left: 2%;
     width: 100%;
+    white-space: nowrap;
     justify-content: flex-end;
 }
 
