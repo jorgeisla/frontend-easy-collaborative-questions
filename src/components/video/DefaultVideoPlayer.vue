@@ -52,6 +52,7 @@
                             :options="playbackRateOptions"
                             :value="1.0"
                             dark
+                            behavior="dialog"
                         >
                             <template v-slot:prepend>
                                 <q-icon
@@ -226,7 +227,7 @@ const handlePopUpActivation = () => {
 };
 
 onMounted(() => {
-    videoPlayer.value.src = './test.mp4';
+    videoPlayer.value.src = './test2.mp4';
     videoPlayer.value.addEventListener('timeupdate', updateProgress);
     videoPlayer.value.addEventListener('loadedmetadata', setDuration);
     watchEffect(() => {
@@ -243,9 +244,9 @@ onMounted(() => {
 
 <style>
 .video-player-container {
+    width: 70%;
     position: relative;
     display: inline-block;
-    text-align: center;
 }
 
 .video-player {
@@ -264,7 +265,6 @@ onMounted(() => {
     bottom: 0;
     left: 0;
     width: 100%;
-    box-sizing: border-box;
 }
 
 /* Video player control bar */

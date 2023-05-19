@@ -1,5 +1,5 @@
 <template>
-    <div class="row">
+    <div class="row q-pt-xl">
         <div class="col" style="text-align: center">
             <DefaultVideoPlayer
                 v-on:current-time-change="handleCurrentTimeChange"
@@ -37,47 +37,46 @@ const togglePopUpOn = () => {
 const question: Ref<Question | null> = ref(null);
 const questions = [
     {
-        questioHeader:
-            'Título de prueba Título de pruebaTítulo de pruebaTítulo de pruebaTítulo de pruebaTítulo de pruebaTítulo de prueba',
+        questioHeader: 'What is the main inspiration of this project?',
         answerOptions: [
             {
-                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1',
+                label: 'the successfully use of Digital Life Enrichment Applications by parrots',
                 value: 0,
             },
             {
-                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1 2',
+                label: 'the rise of the number of parrots kept as pets',
                 value: 1,
             },
             {
-                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1 3',
+                label: 'the lack of cognitive stimuli and challenges given to parrots kept as pets',
                 value: 2,
             },
             {
-                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1 4',
+                label: 'the facility offered by modern technologies to create video games on cell phones',
                 value: 3,
             },
         ],
         id: 1,
-        time: 43,
+        time: 23,
     },
     {
         questioHeader:
-            'Título de prueba Título de pruebaTítulo de pruebaTítulo de pruebaTítulo de pruebaTítulo de pruebaTítulo de prueba',
+            'What is the main task requested by the subject in this experiment?',
         answerOptions: [
             {
-                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1',
+                label: 'to choose the largest of two values',
                 value: 0,
             },
             {
-                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1 2',
+                label: 'to touch the screen',
                 value: 1,
             },
             {
-                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1 3',
+                label: 'to have fun',
                 value: 2,
             },
             {
-                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1 4',
+                label: 'to select the option  they prefer',
                 value: 3,
             },
         ],
@@ -85,28 +84,51 @@ const questions = [
         time: 50,
     },
     {
-        questioHeader:
-            'Título de prueba Título de pruebaTítulo de pruebaTítulo de pruebaTítulo de pruebaTítulo de pruebaTítulo de prueba',
+        questioHeader: 'how many display modes does the application offer?',
         answerOptions: [
             {
-                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1',
+                label: 'only one because it is a prototype',
                 value: 0,
             },
             {
-                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1 2',
+                label: 'two, a discreet and a continuous one',
                 value: 1,
             },
             {
-                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1 3',
+                label: 'four, among which two discreet and two continuous ones',
                 value: 2,
             },
             {
-                label: 'opcion 1 opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1opcion 1 4',
+                label: 'an infinity, even though only four are displayed',
                 value: 3,
             },
         ],
         id: 3,
-        time: 30,
+        time: 113,
+    },
+    {
+        questioHeader:
+            'What characterizes the "Masked Experimental Setup" described here?',
+        answerOptions: [
+            {
+                label: 'the subject has a blindfold',
+                value: 0,
+            },
+            {
+                label: 'the experimenter has a blindfold',
+                value: 1,
+            },
+            {
+                label: 'the experimenter does not see what the subject sees',
+                value: 2,
+            },
+            {
+                label: 'the subject does not see what the experimenter sees',
+                value: 3,
+            },
+        ],
+        id: 3,
+        time: 113,
     },
 ];
 const timeAsKey = () => {

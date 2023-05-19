@@ -17,7 +17,7 @@
                         size="lg"
                         :val="item.value"
                         :label="item.label"
-                        class="text-h6 q-pa-md"
+                        class="text-h6 q-mr-md"
                     />
                 </div>
             </q-card-section>
