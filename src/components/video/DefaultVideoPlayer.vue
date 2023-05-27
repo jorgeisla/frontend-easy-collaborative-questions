@@ -57,6 +57,7 @@
                                 transition-show="jump-up"
                                 transition-hide="jump-down"
                                 v-model="menuOpen"
+                                fit
                             >
                                 <q-btn-toggle
                                     v-model="playbackRate"
@@ -66,6 +67,7 @@
                                     :options="playbackRateOptions"
                                     :stack="true"
                                     @click="handleSelection()"
+                                    :class="{ hidden: !showControls }"
                                 />
                             </q-menu>
                         </q-btn>
@@ -186,7 +188,6 @@ const toggleVideoControlsOff = () => {
 const toggleVideoControlsOffInstantly = () => {
     if (videoIsPlayed.value) {
         showControls.value = false;
-        menuOpen.value = false;
     }
 };
 
