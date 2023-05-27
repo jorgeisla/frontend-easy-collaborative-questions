@@ -47,21 +47,28 @@
                 </div>
                 <div class="button-container-right">
                     <div style="padding-right: 10%">
-                        <q-select
-                            v-model="playbackRate"
-                            :options="playbackRateOptions"
-                            :value="1.0"
-                            dark
-                            behavior="dialog"
+                        <q-btn
+                            color="primary"
+                            icon="fa-solid fa-gauge-high"
+                            size="md"
                         >
-                            <template v-slot:prepend>
-                                <q-icon
-                                    name="fa-solid fa-gauge-high"
-                                    color="grey-4"
-                                    size="lg"
+                            <q-menu
+                                @mousemove="toggleVideoControlsOnForTwoSeconds"
+                                transition-show="jump-up"
+                                transition-hide="jump-down"
+                                v-model="menuOpen"
+                            >
+                                <q-btn-toggle
+                                    v-model="playbackRate"
+                                    push
+                                    glossy
+                                    toggle-color="primary"
+                                    :options="playbackRateOptions"
+                                    :stack="true"
+                                    @click="handleSelection()"
                                 />
-                            </template>
-                        </q-select>
+                            </q-menu>
+                        </q-btn>
                     </div>
                     <button @click="toggleFullScreen">
                         <div v-if="!isFullScreen">
@@ -98,9 +105,31 @@ const isFullScreen = ref(false);
 const volume = ref(1);
 const state: any = inject('state');
 const playbackRate = ref(1.0);
+const menuOpen = ref(false);
 let previous_time = 1;
 
-const playbackRateOptions = ['0.5', '1.0', '1.5', '1.75', '2.0'];
+const playbackRateOptions = [
+    {
+        label: '0.5',
+        value: '0.5',
+    },
+    {
+        label: '1.0',
+        value: '1.0',
+    },
+    {
+        label: '1.5',
+        value: '1.5',
+    },
+    {
+        label: '1.75',
+        value: '1.75',
+    },
+    {
+        label: '2.0',
+        value: '2.0',
+    },
+];
 
 const emit = defineEmits<{ (e: 'current-time-change', val: number): number }>();
 
@@ -146,6 +175,7 @@ const toggleVideoControlsOff = () => {
         const timeoutId = setTimeout(() => {
             if (videoIsPlayed.value) {
                 showControls.value = false;
+                menuOpen.value = false;
             }
             toggleInProgress.value = false;
         }, 2000);
@@ -156,6 +186,7 @@ const toggleVideoControlsOff = () => {
 const toggleVideoControlsOffInstantly = () => {
     if (videoIsPlayed.value) {
         showControls.value = false;
+        menuOpen.value = false;
     }
 };
 
@@ -169,6 +200,7 @@ const toggleVideoControlsOnForTwoSeconds = () => {
         const timeoutId = setTimeout(() => {
             if (videoIsPlayed.value && !mouseMoving.value) {
                 showControls.value = false;
+                menuOpen.value = false;
             }
             toggleInProgress.value = false;
         }, 2000);
@@ -224,6 +256,10 @@ const handlePopUpActivation = () => {
     if (state.popUp === true) {
         handlePause();
     }
+};
+
+const handleSelection = () => {
+    menuOpen.value = false;
 };
 
 onMounted(() => {
