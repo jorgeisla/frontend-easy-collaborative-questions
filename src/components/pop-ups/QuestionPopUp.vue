@@ -1,11 +1,12 @@
 <template>
     <q-dialog v-model="state.popUp">
-        <q-card style="max-width: 70%">
+        <q-card style="max-width: 70%; text-align: left">
             <q-card-section>
                 <div class="text-h3 q-pa-md">
                     {{ props.question?.questioHeader }}
                 </div>
             </q-card-section>
+            <q-separator />
 
             <q-card-section class="q-pt-none">
                 <div
@@ -17,8 +18,9 @@
                         size="lg"
                         :val="item.value"
                         :label="item.label"
-                        class="text-h6 q-mr-md"
+                        class="text-h6 q-pa-md"
                     />
+                    <q-separator />
                 </div>
             </q-card-section>
 

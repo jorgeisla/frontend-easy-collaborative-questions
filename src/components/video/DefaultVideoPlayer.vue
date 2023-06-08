@@ -12,7 +12,11 @@
             ref="videoPlayer"
             @click="togglePlay"
         ></video>
-        <div class="video-controls" :class="{ hidden: !showControls }">
+        <div
+            class="video-controls"
+            :class="{ hidden: !showControls }"
+            id="video-controls"
+        >
             <input
                 class="progress-bar"
                 type="range"
@@ -50,7 +54,7 @@
                         <q-btn
                             color="primary"
                             icon="fa-solid fa-gauge-high"
-                            size="md"
+                            style="font-size: 100%"
                         >
                             <q-menu
                                 @mousemove="toggleVideoControlsOnForTwoSeconds"
@@ -281,7 +285,7 @@ onMounted(() => {
 
 <style>
 .video-player-container {
-    width: 70%;
+    width: 95%;
     position: relative;
     display: inline-block;
 }
@@ -293,15 +297,15 @@ onMounted(() => {
 
 /* Video player control bar */
 .video-controls {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.8);
     color: #fff;
     display: flex;
     flex-direction: column;
-    height: 15%;
     position: absolute;
-    bottom: 0;
+    bottom: 0%;
     left: 0;
     width: 100%;
+    height: 15%;
 }
 
 /* Video player control bar */

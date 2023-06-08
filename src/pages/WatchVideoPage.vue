@@ -1,6 +1,11 @@
 <template>
     <div class="row q-pt-xl">
-        <div class="col" style="text-align: center">
+        <div class="col-md-8 col-xs-12" style="text-align: center">
+            <DefaultVideoPlayer
+                v-on:current-time-change="handleCurrentTimeChange"
+            />
+        </div>
+        <div class="col-md-4 col-xs-12" style="text-align: center">
             <DefaultVideoPlayer
                 v-on:current-time-change="handleCurrentTimeChange"
             />
@@ -38,103 +43,6 @@ const togglePopUpOn = () => {
 const questions = JSON.parse(await readJsonFile('questions.json'));
 
 const question: Ref<Question | null> = ref(null);
-
-// const questions = [
-//     {
-//         questioHeader: 'What is the main inspiration of this project?',
-//         answerOptions: [
-//             {
-//                 label: 'the successfully use of Digital Life Enrichment Applications by parrots',
-//                 value: 0,
-//             },
-//             {
-//                 label: 'the rise of the number of parrots kept as pets',
-//                 value: 1,
-//             },
-//             {
-//                 label: 'the lack of cognitive stimuli and challenges given to parrots kept as pets',
-//                 value: 2,
-//             },
-//             {
-//                 label: 'the facility offered by modern technologies to create video games on cell phones',
-//                 value: 3,
-//             },
-//         ],
-//         id: 1,
-//         time: 23,
-//     },
-//     {
-//         questioHeader:
-//             'What is the main task requested by the subject in this experiment?',
-//         answerOptions: [
-//             {
-//                 label: 'to choose the largest of two values',
-//                 value: 0,
-//             },
-//             {
-//                 label: 'to touch the screen',
-//                 value: 1,
-//             },
-//             {
-//                 label: 'to have fun',
-//                 value: 2,
-//             },
-//             {
-//                 label: 'to select the option  they prefer',
-//                 value: 3,
-//             },
-//         ],
-//         id: 2,
-//         time: 50,
-//     },
-//     {
-//         questioHeader: 'how many display modes does the application offer?',
-//         answerOptions: [
-//             {
-//                 label: 'only one because it is a prototype',
-//                 value: 0,
-//             },
-//             {
-//                 label: 'two, a discreet and a continuous one',
-//                 value: 1,
-//             },
-//             {
-//                 label: 'four, among which two discreet and two continuous ones',
-//                 value: 2,
-//             },
-//             {
-//                 label: 'an infinity, even though only four are displayed',
-//                 value: 3,
-//             },
-//         ],
-//         id: 3,
-//         time: 113,
-//     },
-//     {
-//         questioHeader:
-//             'What characterizes the "Masked Experimental Setup" described here?',
-//         answerOptions: [
-//             {
-//                 label: 'the subject has a blindfold',
-//                 value: 0,
-//             },
-//             {
-//                 label: 'the experimenter has a blindfold',
-//                 value: 1,
-//             },
-//             {
-//                 label: 'the experimenter does not see what the subject sees',
-//                 value: 2,
-//             },
-//             {
-//                 label: 'the subject does not see what the experimenter sees',
-//                 value: 3,
-//             },
-//         ],
-//         id: 3,
-//         time: 113,
-//     },
-// ];
 
 const timeAsKey = () => {
     const timeAsKeyDict: { [key: number]: Question } = {};
