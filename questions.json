@@ -20,7 +20,7 @@
             }
         ],
         "id": 1,
-        "time": 23
+        "time": 2
     },
     {
         "questioHeader": "What is the main task requested by the subject in this experiment?",
@@ -43,7 +43,7 @@
             }
         ],
         "id": 2,
-        "time": 50
+        "time": 3
     },
     {
         "questioHeader": "how many display modes does the application offer?",
@@ -66,7 +66,7 @@
             }
         ],
         "id": 3,
-        "time": 113
+        "time": 4
     },
     {
         "questioHeader": "What characterizes the \"Masked Experimental Setup\" described here?",

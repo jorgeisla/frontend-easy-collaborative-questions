@@ -45,12 +45,12 @@ const props = defineProps<{
 const state: any = inject('state');
 const answers: any = inject('answers');
 
-const selected = ref(answers[`${props.question?.id}`] || '');
+const selected = ref(answers[`${props.question?.id}`]);
+
 const toggleDialogOff = () => {
     state.popUp = false;
     if (selected.value !== '') {
         answers[`${props.question?.id}`] = selected.value;
     }
-    console.log(answers);
 };
 </script>

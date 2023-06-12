@@ -1,8 +1,16 @@
 <template>
-    <div class="q-pa-md" style="width: 100%; text-align: left">
+    <div class="q-pa-md" style="width: 100%">
         <q-list bordered separator>
-            <div v-for="(item, index) in props.questions" :key="index">
-                <q-item clickable v-ripple @click="questionClick(item.time)">
+            <q-toolbar class="bg-primary text-white">
+                <q-toolbar-title>Preguntas</q-toolbar-title>
+            </q-toolbar>
+            <div v-for="(item, index) in questions" :key="index">
+                <q-item
+                    style="text-align: left"
+                    clickable
+                    v-ripple
+                    @click="questionClick(item.time)"
+                >
                     <q-item-section>
                         <q-item-label>{{ item.questioHeader }}</q-item-label>
                         <q-item-label caption>{{
@@ -20,10 +28,13 @@
 </template>
 <script setup lang="ts">
 import { Question } from 'src/models/video/pop-up';
+import { ref } from 'vue';
 
 const props = defineProps<{
     questions: Question[] | null;
 }>();
+
+const questions = ref(props.questions);
 
 const emit = defineEmits<{ (e: 'question-click', val: number): number }>();
 

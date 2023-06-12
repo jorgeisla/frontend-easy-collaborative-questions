@@ -8,7 +8,8 @@
         <div class="col-md-4 col-xs-12" style="text-align: center">
             <SideQuestions
                 v-on:question-click="handleQuestionClick"
-                :questions="questions"
+                :questions="discoverQuestions"
+                :key="sideQuestionsComponentKey"
             />
         </div>
     </div>
@@ -18,6 +19,7 @@
             :state="state.popUp"
             :question="question"
             :answers="answers"
+            :key="popUpComponentKey"
         />
     </div>
 </template>
@@ -35,14 +37,19 @@ const state = reactive({
 
 const answers = reactive({});
 
+const sideQuestionsComponentKey = ref(0);
+const popUpComponentKey = ref(0);
+
 provide('state', state);
 provide('answers', answers);
 
 const togglePopUpOn = () => {
+    popUpComponentKey.value += 1;
     state.popUp = true;
 };
 
 const questions = JSON.parse(await readJsonFile('questions.json'));
+const discoverQuestions: Question[] = [];
 
 const question: Ref<Question | null> = ref(null);
 
@@ -67,7 +74,10 @@ const questionTimes = getQuestionTimes();
 
 const handleCurrentTimeChange = (currentTime: number) => {
     if (questionTimes.includes(currentTime)) {
-        question.value = timeAsKeyDictionary[currentTime];
+        const questionFromTimeDictionary = timeAsKeyDictionary[currentTime];
+        question.value = questionFromTimeDictionary;
+        discoverQuestions.push(questionFromTimeDictionary);
+        sideQuestionsComponentKey.value += 1;
         togglePopUpOn();
     }
 };
