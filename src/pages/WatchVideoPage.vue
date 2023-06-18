@@ -8,7 +8,8 @@
         <div class="col-md-4 col-xs-12" style="text-align: center">
             <SideQuestions
                 v-on:question-click="handleQuestionClick"
-                :questions="discoverQuestions"
+                :discovered-questions="discoverQuestions"
+                :questions="questions"
                 :key="sideQuestionsComponentKey"
             />
         </div>
