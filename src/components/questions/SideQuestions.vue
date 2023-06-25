@@ -6,7 +6,7 @@
                 <q-btn
                     color="primary"
                     label="Enviar respuestas"
-                    @click="enviarRespuestas()"
+                    @click="sendAnswers()"
                     id="enviar-respuestas-button"
                 />
             </q-toolbar>
@@ -43,12 +43,16 @@ import { Question } from 'src/models/video/pop-up';
 import EnviarRespuestasConfirm from 'src/components/pop-ups/EnviarRespuestasConfirm.vue';
 import EnviarRespuestasSinResponderTodasLasPreguntasConfirm from 'src/components/pop-ups/EnviarRespuestasSinResponderTodasLasPreguntasConfirm.vue';
 import { ref, inject, provide, reactive } from 'vue';
+import { useQuasar } from 'quasar';
+import { formatTime } from 'src/utils';
+const $q = useQuasar();
 
 const props = defineProps<{
     discoveredQuestions: Question[] | null;
     questions: Question[] | null;
 }>();
 const answers: any = inject('answers');
+const answerSent = ref(false);
 
 const confirmAnswersPopUpState = reactive({
     popUp: false,
@@ -71,24 +75,22 @@ const questionClick = (id: number) => {
     emit('question-click', id);
 };
 
-const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes.toString().padStart(2, '0')}:${seconds
-        .toString()
-        .padStart(2, '0')}`;
-};
-
 const alreadyAnswer = (question: Question) => {
-    console.log(answers);
     if (Object.keys(answers).includes(`${question.id}`)) {
         return true;
     }
     return false;
 };
 
-const enviarRespuestas = () => {
-    checkAllQuestionsAnswered();
+const sendAnswers = () => {
+    if (answerSent.value) {
+        $q.notify({
+            type: 'negative',
+            message: 'Las respuestas ya fueron enviadas',
+            position: 'top',
+        });
+        return '';
+    }
     if (!checkAllQuestionsAnswered()) {
         confirmIncompleteAnswersPopUpState.popUp = true;
     }
@@ -97,6 +99,7 @@ const enviarRespuestas = () => {
 };
 
 const handleAnswersSent = () => {
+    answerSent.value = true;
     const enviarRespuestasButton = document.getElementById(
         'enviar-respuestas-button'
     );

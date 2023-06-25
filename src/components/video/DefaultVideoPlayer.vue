@@ -95,6 +95,7 @@
 </template>
 <script setup lang="ts">
 import { ref, onMounted, watchEffect, inject } from 'vue';
+import { formatTime } from 'src/utils';
 
 const videoPlayer = ref();
 const videoIsPlayed = ref(false);
@@ -242,14 +243,6 @@ const setDuration = () => {
     const updatedDuration = formatTime(videoPlayer.value.duration);
     duration.value = videoPlayer.value.duration.toFixed(2);
     durationStr.value = updatedDuration;
-};
-
-const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes.toString().padStart(2, '0')}:${seconds
-        .toString()
-        .padStart(2, '0')}`;
 };
 
 const getSeconds = (time: number) => {

@@ -15,7 +15,9 @@ import iconSet from 'quasar/icon-set/material-icons'
 
 
 
+import {Notify,Loading} from 'quasar'
 
 
-export default { config: {},iconSet }
+
+export default { config: {},iconSet,plugins: {Notify,Loading} }
 

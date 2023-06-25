@@ -14,7 +14,11 @@
             />
         </div>
     </div>
-
+    <div class="row q-pt-xl">
+        <div class="col-md-12 col-xs-12" style="text-align: center">
+            <AnswersChecker :questions="questions" />
+        </div>
+    </div>
     <div>
         <QuestionPopUp
             :state="state.popUp"
@@ -28,6 +32,7 @@
 import DefaultVideoPlayer from 'src/components/video/DefaultVideoPlayer.vue';
 import QuestionPopUp from 'src/components/pop-ups/QuestionPopUp.vue';
 import SideQuestions from 'src/components/questions/SideQuestions.vue';
+import AnswersChecker from 'src/components/answers/AnswersChecker.vue';
 import { reactive, provide, ref, Ref } from 'vue';
 import { Question } from 'src/models/video/pop-up';
 import { readJsonFile } from 'src/utils';
