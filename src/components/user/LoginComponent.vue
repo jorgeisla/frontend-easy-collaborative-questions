@@ -31,11 +31,16 @@ import { ref } from 'vue';
 import axios from 'axios';
 import { useQuasar } from 'quasar';
 import { userLogin } from 'src/endpoints/user';
+import { userStore } from 'src/stores/user-store';
+import { UserLoginResponse } from 'src/models/user/user';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const username = ref('');
 const password = ref('');
 const $q = useQuasar();
 const loginEndpoint = userLogin();
+const store = userStore();
 
 const usernameRules = [
     (val: string) => (val && val.length > 0) || 'Ingrese su usuario',
@@ -47,7 +52,7 @@ const passwordRules = [
 const login = async () => {
     try {
         console.log(loginEndpoint);
-        const { data, status } = await axios.post(
+        const { data, status } = await axios.post<UserLoginResponse>(
             loginEndpoint,
             {},
             {
@@ -63,11 +68,13 @@ const login = async () => {
                 color: 'red',
             });
         } else {
+            store.setUserData(data.token, data.user.username, data.user.email);
             $q.notify({
                 message: 'Login realizado con exito.',
                 color: 'green',
                 position: 'top',
             });
+            router.push({ name: 'WatchVideo' });
         }
     } catch {
         $q.notify({
