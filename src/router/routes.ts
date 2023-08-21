@@ -10,9 +10,15 @@ const routes: RouteRecordRaw[] = [
         component: () => import('layouts/MainLayout.vue'),
         children: [
             {
-                path: '',
-                component: () => import('pages/WatchVideoPage.vue'),
+                path: 'watch',
+                component: () => import('pages/video/WatchVideoPage.vue'),
                 name: 'WatchVideo',
+                meta: {},
+            },
+            {
+                path: 'upload',
+                component: () => import('pages/video/UploadVideoPage.vue'),
+                name: 'UploadVideo',
                 meta: {},
             },
         ],
