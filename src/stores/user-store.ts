@@ -27,4 +27,5 @@ export const userStore = defineStore('login', {
             this.setEmail(email);
         },
     },
+    persist: true,
 });

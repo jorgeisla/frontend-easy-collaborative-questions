@@ -4,4 +4,8 @@ const createUploadLink = () => {
     return `${api}/video/create-upload-link`;
 };
 
-export { createUploadLink };
+const crudVideoApi = () => {
+    return `${api}/video/`;
+};
+
+export { createUploadLink, crudVideoApi };
