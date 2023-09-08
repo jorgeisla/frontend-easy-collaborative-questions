@@ -4,8 +4,12 @@ const createUploadLink = () => {
     return `${api}/video/create-upload-link`;
 };
 
+const retrieveDownloadLink = (id: number) => {
+    return `${api}/video/${id}/retrieve-download-link`;
+};
+
 const crudVideoApi = () => {
     return `${api}/video/`;
 };
 
-export { createUploadLink, crudVideoApi };
+export { createUploadLink, crudVideoApi, retrieveDownloadLink };

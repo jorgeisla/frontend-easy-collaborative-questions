@@ -65,12 +65,9 @@ const createUploadLinkAction = async () => {
         const presignedUrl = data[0].presigned_url;
         const fileName = data[0].file_name;
 
-        // Create a FormData object to send the file
-        const formData = new FormData();
-        formData.append('file', videoInput.value);
-
         // Make a PUT request to upload the file to the pre-signed URL
-        const response = await axios.put(presignedUrl, formData, {
+        const response = await axios.put(presignedUrl, videoInput.value, {
+            headers: { 'Content-Type': 'video/mp4' },
             onUploadProgress: (progressEvent) => {
                 if (progressEvent.total) {
                     const completedPercentage = Math.round(
@@ -91,7 +88,7 @@ const createUploadLinkAction = async () => {
             );
             if (videoCreationResponse.status === 201) {
                 $q.notify({
-                    message: 'Archivo subido con éxito.',
+                    message: 'Archivo almacenado con éxito.',
                     color: 'green',
                     position: 'top',
                 });

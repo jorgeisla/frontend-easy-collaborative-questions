@@ -3,6 +3,7 @@
         <div class="col-md-8 col-xs-12" style="text-align: center">
             <DefaultVideoPlayer
                 v-on:current-time-change="handleCurrentTimeChange"
+                :url="videoUrl"
             />
         </div>
         <div class="col-md-4 col-xs-12" style="text-align: center">
@@ -36,10 +37,21 @@ import AnswersChecker from 'src/components/answers/AnswersChecker.vue';
 import { reactive, provide, ref, Ref } from 'vue';
 import { Question } from 'src/models/video/pop-up';
 import { readJsonFile } from 'src/utils';
+import axios from 'axios';
+import { retrieveDownloadLink } from 'src/endpoints/video';
+import { useQuasar } from 'quasar';
+import { cloudfront } from 'src/utils/env-var';
 
+const $q = useQuasar();
+
+const videoUrl = ref();
 const state = reactive({
     popUp: false,
 });
+
+const props = defineProps<{
+    id: number;
+}>();
 
 const answers = reactive({});
 
@@ -96,4 +108,27 @@ const handleQuestionClick = (time: number) => {
 };
 
 const timeAsKeyDictionary = timeAsKey();
+
+const retrieveVideoLink = async () => {
+    try {
+        const { data, status } = await axios.get(
+            retrieveDownloadLink(props.id)
+        );
+        if (status !== 200) {
+            $q.notify({
+                message: 'Error en la conexión con el servidor.',
+                color: 'red',
+            });
+        }
+        console.log(cloudfront);
+        videoUrl.value = `${cloudfront}/${data.file_name}`;
+    } catch (e) {
+        $q.notify({
+            message: 'Error al descargar video',
+            color: 'red',
+        });
+    }
+};
+
+await retrieveVideoLink();
 </script>

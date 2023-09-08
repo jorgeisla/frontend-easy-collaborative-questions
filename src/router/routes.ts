@@ -10,10 +10,11 @@ const routes: RouteRecordRaw[] = [
         component: () => import('layouts/MainLayout.vue'),
         children: [
             {
-                path: 'watch',
+                path: 'watch/:id',
                 component: () => import('pages/video/WatchVideoPage.vue'),
                 name: 'WatchVideo',
                 meta: {},
+                props: true,
             },
             {
                 path: 'upload',

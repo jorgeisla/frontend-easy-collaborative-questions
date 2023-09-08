@@ -115,6 +115,10 @@ const playbackRate = ref(1.0);
 const menuOpen = ref(false);
 let previous_time = 1;
 
+const props = defineProps<{
+    url: string | null;
+}>();
+
 const playbackRateOptions = [
     {
         label: '0.5',
@@ -261,7 +265,7 @@ const handleSelection = () => {
 };
 
 onMounted(() => {
-    videoPlayer.value.src = './test2.mp4';
+    videoPlayer.value.src = props.url;
     videoPlayer.value.addEventListener('timeupdate', updateProgress);
     videoPlayer.value.addEventListener('loadedmetadata', setDuration);
     watchEffect(() => {
