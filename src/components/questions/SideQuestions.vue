@@ -95,7 +95,6 @@ const sendAnswers = () => {
         confirmIncompleteAnswersPopUpState.popUp = true;
     }
     confirmAnswersPopUpState.popUp = true;
-    console.log('Respuestas enviadas');
 };
 
 const handleAnswersSent = () => {

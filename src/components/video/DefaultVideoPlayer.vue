@@ -50,6 +50,33 @@
                     />
                 </div>
                 <div class="button-container-right">
+                    <div style="padding-right: 3%">
+                        <q-btn
+                            color="primary"
+                            icon="fa-solid fa-gauge-high"
+                            style="font-size: 100%"
+                            label="Pregunta"
+                        >
+                            <q-menu
+                                @mousemove="toggleVideoControlsOnForTwoSeconds"
+                                transition-show="jump-up"
+                                transition-hide="jump-down"
+                                v-model="questionMenuOpen"
+                                fit
+                            >
+                                <q-btn-toggle
+                                    v-model="createQuestionSelectedOption"
+                                    push
+                                    glossy
+                                    toggle-color="primary"
+                                    :options="questionOptions"
+                                    :stack="true"
+                                    @click="handleQuestionCreation()"
+                                    :class="{ hidden: !showControls }"
+                                />
+                            </q-menu>
+                        </q-btn>
+                    </div>
                     <div style="padding-right: 10%">
                         <q-btn
                             color="primary"
@@ -111,8 +138,13 @@ const timeOuts: any[] = [];
 const isFullScreen = ref(false);
 const volume = ref(1);
 const state: any = inject('state');
+const createAlternativeQuestionState: any = inject(
+    'createAlternativeQuestionState'
+);
 const playbackRate = ref(1.0);
 const menuOpen = ref(false);
+const createQuestionSelectedOption = ref();
+const questionMenuOpen = ref(false);
 let previous_time = 1;
 
 const props = defineProps<{
@@ -142,7 +174,18 @@ const playbackRateOptions = [
     },
 ];
 
-const emit = defineEmits<{ (e: 'current-time-change', val: number): number }>();
+const questionOptions = [
+    { label: 'Alternativas', value: 'AQ' },
+    { label: 'V o F', value: 'TOFQ' },
+    { label: 'Desarrollo', value: 'EQ' },
+];
+
+const emit = defineEmits<{
+    (e: 'current-time-change', val: number): number;
+    (e: 'create-alternative-question', time: number): void;
+    (e: 'create-TOF-question', time: number): void;
+    (e: 'create-essay-question', time: number): void;
+}>();
 
 const toggleFullScreen = () => {
     if (document.fullscreenElement) {
@@ -255,13 +298,36 @@ const getSeconds = (time: number) => {
 };
 
 const handlePopUpActivation = () => {
-    if (state.popUp === true) {
+    if (state.popUp === true || createAlternativeQuestionState.popUp === true) {
         handlePause();
     }
 };
 
 const handleSelection = () => {
     menuOpen.value = false;
+};
+
+const handleAlternativeQuestionCreation = () => {
+    emit('create-alternative-question', getSeconds(currentTime.value));
+};
+
+const handleTORQuestionCreation = () => {
+    emit('create-TOF-question', getSeconds(currentTime.value));
+};
+
+const handleEssayQuestionCreation = () => {
+    emit('create-essay-question', getSeconds(currentTime.value));
+};
+
+const handleQuestionCreation = () => {
+    console.log(createQuestionSelectedOption.value);
+    if (createQuestionSelectedOption.value === 'AQ') {
+        return handleAlternativeQuestionCreation();
+    } else if (createQuestionSelectedOption.value === 'TOFQ') {
+        return handleTORQuestionCreation();
+    } else if (createQuestionSelectedOption.value === 'EQ') {
+        return handleEssayQuestionCreation();
+    }
 };
 
 onMounted(() => {

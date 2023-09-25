@@ -51,7 +51,6 @@ const passwordRules = [
 
 const login = async () => {
     try {
-        console.log(loginEndpoint);
         const { data, status } = await axios.post<UserLoginResponse>(
             loginEndpoint,
             {},
