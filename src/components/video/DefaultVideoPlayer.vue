@@ -55,7 +55,7 @@
                             color="primary"
                             icon="fa-solid fa-gauge-high"
                             style="font-size: 100%"
-                            label="Pregunta"
+                            label="Preguntar"
                         >
                             <q-menu
                                 @mousemove="toggleVideoControlsOnForTwoSeconds"
