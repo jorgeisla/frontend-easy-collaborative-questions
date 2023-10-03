@@ -53,7 +53,7 @@
                     <div style="padding-right: 3%">
                         <q-btn
                             color="primary"
-                            icon="fa-solid fa-gauge-high"
+                            icon="fa-regular fa-circle-question"
                             style="font-size: 100%"
                             label="Preguntar"
                         >
