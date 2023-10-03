@@ -73,7 +73,7 @@ const login = async () => {
                 color: 'green',
                 position: 'top',
             });
-            router.push({ name: 'WatchVideo' });
+            router.push({ name: 'MyVideos' });
         }
     } catch {
         $q.notify({
