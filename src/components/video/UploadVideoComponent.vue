@@ -16,7 +16,13 @@
                             'Ingrese nombre del video',
                     ]"
                 />
-                <q-file clearable outlined v-model="videoInput" class="q-pa-md">
+                <q-file
+                    clearable
+                    outlined
+                    v-model="videoInput"
+                    class="q-pa-md"
+                    @update:model-value="updateVideo"
+                >
                     <template v-slot:prepend>
                         <q-icon name="attach_file" />
                     </template>
@@ -46,10 +52,22 @@ import { userStore } from 'src/stores/user-store';
 
 const $q = useQuasar();
 const videoInput = ref();
+const videoDuration = ref();
 const uploadProgress = ref(0);
 const videoName = ref('');
 const store = userStore();
 const token = store.getToken;
+
+const updateVideo = () => {
+    const videoElement = document.createElement('video');
+    videoElement.preload = 'metadata';
+    videoElement.onloadedmetadata = () => {
+        // Get video duration in seconds
+        const duration = videoElement.duration;
+        videoDuration.value = duration.toFixed(0); // Store duration in data property
+    };
+    videoElement.src = URL.createObjectURL(videoInput.value);
+};
 
 const createUploadLinkAction = async () => {
     try {
@@ -78,7 +96,12 @@ const createUploadLinkAction = async () => {
             },
         });
         if (response.status === 200) {
-            const videoPayload = { file_name: fileName, name: videoName.value };
+            const duration = parseInt(videoDuration.value);
+            const videoPayload = {
+                file_name: fileName,
+                name: videoName.value,
+                length: duration,
+            };
             const videoCreationResponse = await axios.post(
                 crudVideoApi(),
                 videoPayload,
