@@ -7,7 +7,7 @@
             <div v-for="(item, index) in questions" :key="index">
                 <q-item style="text-align: left" clickable v-ripple>
                     <q-item-section>
-                        <q-item-label>{{ item.questioHeader }}</q-item-label>
+                        <q-item-label>{{ item.questionHeader }}</q-item-label>
                         <q-item-label caption>{{
                             formatTime(item.time)
                         }}</q-item-label>

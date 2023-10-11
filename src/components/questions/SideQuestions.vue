@@ -18,7 +18,7 @@
                     @click="questionClick(item.time)"
                 >
                     <q-item-section>
-                        <q-item-label>{{ item.questioHeader }}</q-item-label>
+                        <q-item-label>{{ item.questionHeader }}</q-item-label>
                         <q-item-label caption>{{
                             formatTime(item.time)
                         }}</q-item-label>
@@ -48,7 +48,7 @@ import { formatTime } from 'src/utils';
 const $q = useQuasar();
 
 const props = defineProps<{
-    discoveredQuestions: Question[] | null;
+    discoveredQuestions: { [key: number]: Question } | null;
     questions: Question[] | null;
 }>();
 const answers: any = inject('answers');
@@ -66,8 +66,9 @@ provide(
     'confirmIncompleteAnswersPopUpState',
     confirmIncompleteAnswersPopUpState
 );
-
-const discoveredQuestions = ref(props.discoveredQuestions);
+const discoveredQuestions = ref<Question[] | null>(
+    props.discoveredQuestions ? Object.values(props.discoveredQuestions) : null
+);
 
 const emit = defineEmits<{ (e: 'question-click', val: number): number }>();
 
@@ -93,8 +94,9 @@ const sendAnswers = () => {
     }
     if (!checkAllQuestionsAnswered()) {
         confirmIncompleteAnswersPopUpState.popUp = true;
+    } else {
+        confirmAnswersPopUpState.popUp = true;
     }
-    confirmAnswersPopUpState.popUp = true;
 };
 
 const handleAnswersSent = () => {
@@ -109,7 +111,7 @@ const handleAnswersSent = () => {
 const checkAllQuestionsAnswered = () => {
     const questionsNumber = props.questions ? props.questions.length : 0;
     const answersNumber = Object.keys(answers).length;
-    if (questionsNumber === answers) {
+    if (questionsNumber === answersNumber) {
         return true;
     } else if (questionsNumber > answersNumber) {
         return false;

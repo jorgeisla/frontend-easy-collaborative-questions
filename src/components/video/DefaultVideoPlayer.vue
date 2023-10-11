@@ -141,6 +141,9 @@ const state: any = inject('state');
 const createAlternativeQuestionState: any = inject(
     'createAlternativeQuestionState'
 );
+const createTOFQuestionState: any = inject('createTOFQuestionState');
+const createEssayQuestionState: any = inject('createEssayQuestionState');
+
 const playbackRate = ref(1.0);
 const menuOpen = ref(false);
 const createQuestionSelectedOption = ref();
@@ -278,7 +281,7 @@ const setMouseMove = () => {
 
 const updateProgress = () => {
     const time = Math.floor(videoPlayer.value.currentTime);
-    currentTime.value = videoPlayer.value.currentTime;
+    currentTime.value = time;
     currentTimeStr.value = formatTime(time);
     if (previous_time !== time) {
         emit('current-time-change', getSeconds(currentTime.value));
@@ -288,7 +291,7 @@ const updateProgress = () => {
 
 const setDuration = () => {
     const updatedDuration = formatTime(videoPlayer.value.duration);
-    duration.value = videoPlayer.value.duration.toFixed(2);
+    duration.value = Math.floor(videoPlayer.value.duration);
     durationStr.value = updatedDuration;
 };
 
@@ -298,7 +301,14 @@ const getSeconds = (time: number) => {
 };
 
 const handlePopUpActivation = () => {
-    if (state.popUp === true || createAlternativeQuestionState.popUp === true) {
+    if (
+        state.alternativePopUp === true ||
+        state.essayPopUp === true ||
+        state.tofPopUp === true ||
+        createAlternativeQuestionState.popUp === true ||
+        createTOFQuestionState.popUp === true ||
+        createEssayQuestionState.popUp === true
+    ) {
         handlePause();
     }
 };
@@ -320,7 +330,6 @@ const handleEssayQuestionCreation = () => {
 };
 
 const handleQuestionCreation = () => {
-    console.log(createQuestionSelectedOption.value);
     if (createQuestionSelectedOption.value === 'AQ') {
         return handleAlternativeQuestionCreation();
     } else if (createQuestionSelectedOption.value === 'TOFQ') {

@@ -26,7 +26,9 @@
 import { inject } from 'vue';
 
 const emit = defineEmits<{ (e: 'answers-sent', val: boolean): boolean }>();
-const confirmAnswersPopUpState: any = inject('confirmAnswersPopUpState');
+const confirmAnswersPopUpState: any = inject(
+    'confirmIncompleteAnswersPopUpState'
+);
 
 const sendAnswers = () => {
     emit('answers-sent', true);

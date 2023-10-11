@@ -4,10 +4,11 @@ interface Answer {
 }
 
 interface Question {
-    questioHeader: string;
+    questionHeader: string;
     answerOptions: Answer[];
     id: number;
     time: number;
+    type: 'TOFQ' | 'EQ' | 'AQ';
 }
 
 export type { Question };

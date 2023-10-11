@@ -186,7 +186,6 @@ const toggleDialogOff = () => {
 
 const onSubmit = async () => {
     try {
-        console.log('submit');
         const appearanceTime = minute.value * 60 + second.value;
         const alternative_question_option: any[] = [];
         const alternative_question = {
@@ -229,6 +228,7 @@ const onSubmit = async () => {
                 color: 'green',
                 position: 'top',
             });
+            toggleDialogOff();
         } else {
             $q.notify({
                 message: 'Error al crear pregunta.',

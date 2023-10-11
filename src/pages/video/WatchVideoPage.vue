@@ -29,6 +29,18 @@
         <QuestionPopUp :question="question" :key="popUpComponentKey" />
     </div>
     <div>
+        <EssayQuestionPopUp
+            :question="question"
+            :key="popUpComponentKey"
+        ></EssayQuestionPopUp>
+    </div>
+    <div>
+        <TOFQuestionPopUp
+            :question="question"
+            :key="popUpComponentKey"
+        ></TOFQuestionPopUp>
+    </div>
+    <div>
         <CreateAlternativeQuestionForm
             :videoTime="videoTime"
         ></CreateAlternativeQuestionForm>
@@ -47,25 +59,30 @@
 <script setup lang="ts">
 import DefaultVideoPlayer from 'src/components/video/DefaultVideoPlayer.vue';
 import QuestionPopUp from 'src/components/pop-ups/QuestionPopUp.vue';
+import EssayQuestionPopUp from 'src/components/pop-ups/EssayQuestionPopUp.vue';
 import SideQuestions from 'src/components/questions/SideQuestions.vue';
+import TOFQuestionPopUp from 'src/components/pop-ups/TOFQuestionPopUp.vue';
 // import AnswersChecker from 'src/components/answers/AnswersChecker.vue';
 import CreateAlternativeQuestionForm from 'src/components/questions/CreateAlternativeQuestionForm.vue';
 import CreateTrueorFalseQuestionForm from 'src/components/questions/CreateTrueorFalseQuestionForm.vue';
 import { reactive, provide, ref, Ref } from 'vue';
 import { Question } from 'src/models/video/pop-up';
-import { readJsonFile } from 'src/utils';
 import axios from 'axios';
 import { retrieveDownloadLink } from 'src/endpoints/video';
 import { useQuasar } from 'quasar';
 import { cloudfront } from 'src/utils/env-var';
 import CreateEssayQuestionForm from 'src/components/questions/CreateEssayQuestionForm.vue';
+import { listQuestionsFromVideo } from 'src/endpoints/questions';
 
 const $q = useQuasar();
 
 const videoUrl = ref();
 const state = reactive({
-    popUp: false,
+    essayPopUp: false,
+    tofPopUp: false,
+    alternativePopUp: false,
 });
+
 const videoTime = ref(0);
 
 const createAlternativeQuestionState = reactive({ popUp: false });
@@ -80,6 +97,8 @@ const answers = reactive({});
 
 const sideQuestionsComponentKey = ref(0);
 const popUpComponentKey = ref(0);
+const timeAsKeyDictionary = ref<{ [key: number]: Question }>({});
+const questionTimes = ref<number[]>([]);
 
 provide('state', state);
 provide('answers', answers);
@@ -89,47 +108,66 @@ provide('createEssayQuestionState', createEssayQuestionState);
 
 const togglePopUpOn = () => {
     popUpComponentKey.value += 1;
-    state.popUp = true;
+    state.alternativePopUp = true;
 };
 
-const questions = JSON.parse(await readJsonFile('questions.json'));
-const discoverQuestions: Question[] = [];
+const toggleEssayQuestionPopUpOn = () => {
+    popUpComponentKey.value += 1;
+    state.essayPopUp = true;
+};
+
+const toggleToFQuestionPopUpOn = () => {
+    popUpComponentKey.value += 1;
+    state.tofPopUp = true;
+};
+
+const questions = ref<Question[]>([]);
+const discoverQuestions = ref<{ [key: string]: Question }>({});
 
 const question: Ref<Question | null> = ref(null);
 
 const timeAsKey = () => {
-    const timeAsKeyDict: { [key: number]: Question } = {};
-    questions.forEach((question: Question) => {
-        timeAsKeyDict[`${question.time}`] = question;
+    questions.value.forEach((question: Question) => {
+        timeAsKeyDictionary.value[`${question.time}`] = question;
     });
-
-    return timeAsKeyDict;
 };
 
 const getQuestionTimes = () => {
-    const questionTimes = questions.map((question: Question) => {
+    questionTimes.value = questions.value.map((question: Question) => {
         return question.time;
     });
-
-    return questionTimes;
 };
-
-const questionTimes = getQuestionTimes();
 
 const handleCurrentTimeChange = (currentTime: number) => {
     videoTime.value = currentTime;
-    if (questionTimes.includes(currentTime)) {
-        const questionFromTimeDictionary = timeAsKeyDictionary[currentTime];
-        question.value = questionFromTimeDictionary;
-        discoverQuestions.push(questionFromTimeDictionary);
-        sideQuestionsComponentKey.value += 1;
-        togglePopUpOn();
+    if (questionTimes.value.includes(currentTime)) {
+        const questionFromTimeDictionary =
+            timeAsKeyDictionary.value[currentTime];
+        if (questionFromTimeDictionary.type === 'AQ') {
+            question.value = questionFromTimeDictionary;
+            discoverQuestions.value[`${questionFromTimeDictionary.id}`] =
+                questionFromTimeDictionary;
+            sideQuestionsComponentKey.value += 1;
+            togglePopUpOn();
+        } else if (questionFromTimeDictionary.type === 'EQ') {
+            question.value = questionFromTimeDictionary;
+            discoverQuestions.value[`${questionFromTimeDictionary.id}`] =
+                questionFromTimeDictionary;
+            sideQuestionsComponentKey.value += 1;
+            toggleEssayQuestionPopUpOn();
+        } else if (questionFromTimeDictionary.type === 'TOFQ') {
+            question.value = questionFromTimeDictionary;
+            discoverQuestions.value[`${questionFromTimeDictionary.id}`] =
+                questionFromTimeDictionary;
+            sideQuestionsComponentKey.value += 1;
+            toggleToFQuestionPopUpOn();
+        }
     }
 };
 
 const handleQuestionClick = (time: number) => {
-    if (questionTimes.includes(time)) {
-        question.value = timeAsKeyDictionary[time];
+    if (questionTimes.value.includes(time)) {
+        question.value = timeAsKeyDictionary.value[time];
         togglePopUpOn();
     }
 };
@@ -148,8 +186,6 @@ const handleEssayQuestionFormActivation = (time: number) => {
     videoTime.value = time;
     createEssayQuestionState.popUp = true;
 };
-
-const timeAsKeyDictionary = timeAsKey();
 
 const retrieveVideoLink = async () => {
     try {
@@ -171,5 +207,65 @@ const retrieveVideoLink = async () => {
     }
 };
 
-await retrieveVideoLink();
+const listQuestions = async () => {
+    try {
+        const { data, status } = await axios.get(
+            listQuestionsFromVideo(props.id)
+        );
+        if (status !== 200) {
+            $q.notify({
+                message: 'Error en la conexión con el servidor.',
+                color: 'red',
+            });
+        }
+        questions.value = data.map((item) => {
+            if (item.question_type === 'AQ') {
+                const answerOptions =
+                    item.alternative_question.alternative_question_option.map(
+                        (alternativeOption) => {
+                            return {
+                                label: alternativeOption.sentence,
+                                value: alternativeOption.id,
+                            };
+                        }
+                    );
+                return {
+                    questionHeader: item.header,
+                    answerOptions: answerOptions,
+                    id: item.id,
+                    time: item.appearance_time,
+                    type: item.question_type,
+                };
+            } else if (item.question_type === 'TOFQ') {
+                const answerOptions = [
+                    { label: 'Verdadero', value: 1 },
+                    { label: 'Falso', value: 0 },
+                ];
+                return {
+                    questionHeader: item.header,
+                    answerOptions: answerOptions,
+                    id: item.id,
+                    time: item.appearance_time,
+                    type: item.question_type,
+                };
+            } else if (item.question_type === 'EQ') {
+                return {
+                    questionHeader: item.header,
+                    id: item.id,
+                    time: item.appearance_time,
+                    type: item.question_type,
+                };
+            }
+        });
+        timeAsKey();
+        getQuestionTimes();
+    } catch (e) {
+        $q.notify({
+            message: 'Error al descargar video',
+            color: 'red',
+        });
+    }
+};
+
+await Promise.allSettled([listQuestions(), retrieveVideoLink()]);
 </script>

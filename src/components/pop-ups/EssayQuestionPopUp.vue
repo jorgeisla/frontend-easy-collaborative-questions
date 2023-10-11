@@ -1,5 +1,5 @@
 <template>
-    <q-dialog v-model="state.alternativePopUp">
+    <q-dialog v-model="state.essayPopUp">
         <q-card style="max-width: 70%; text-align: left">
             <q-card-section>
                 <div class="text-h3 q-pa-md">
@@ -9,21 +9,14 @@
             <q-separator />
 
             <q-card-section class="q-pt-none">
-                <div
-                    v-for="(item, index) in props.question?.answerOptions"
-                    :key="index"
-                >
-                    <q-radio
-                        v-model="selected"
-                        size="lg"
-                        :val="item.value"
-                        :label="item.label"
-                        class="text-h6 q-pa-md"
-                    />
-                    <q-separator />
-                </div>
+                <q-input
+                    v-model="selected"
+                    size="lg"
+                    label="Ingrese una respuesta"
+                    class="text-h6 q-pa-md"
+                />
+                <q-separator />
             </q-card-section>
-
             <q-card-actions align="right">
                 <q-btn
                     label="Responder"
@@ -35,6 +28,7 @@
     </q-dialog>
 </template>
 <script setup lang="ts">
+import { stat } from 'fs';
 import { Question } from 'src/models/video/pop-up';
 import { inject, ref } from 'vue';
 
@@ -48,7 +42,7 @@ const answers: any = inject('answers');
 const selected = ref(answers[`${props.question?.id}`]);
 
 const toggleDialogOff = () => {
-    state.alternativePopUp = false;
+    state.essayPopUp = false;
     if (selected.value !== '') {
         answers[`${props.question?.id}`] = selected.value;
     }

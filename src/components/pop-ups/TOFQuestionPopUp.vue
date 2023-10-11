@@ -1,5 +1,5 @@
 <template>
-    <q-dialog v-model="state.alternativePopUp">
+    <q-dialog v-model="state.tofPopUp">
         <q-card style="max-width: 70%; text-align: left">
             <q-card-section>
                 <div class="text-h3 q-pa-md">
@@ -9,18 +9,24 @@
             <q-separator />
 
             <q-card-section class="q-pt-none">
-                <div
-                    v-for="(item, index) in props.question?.answerOptions"
-                    :key="index"
-                >
+                <div>
                     <q-radio
                         v-model="selected"
                         size="lg"
-                        :val="item.value"
-                        :label="item.label"
+                        val="1"
+                        label="Verdadero"
                         class="text-h6 q-pa-md"
                     />
                     <q-separator />
+                </div>
+                <div>
+                    <q-radio
+                        v-model="selected"
+                        size="lg"
+                        val="0"
+                        label="Falso"
+                        class="text-h6 q-pa-md"
+                    />
                 </div>
             </q-card-section>
 
@@ -48,7 +54,7 @@ const answers: any = inject('answers');
 const selected = ref(answers[`${props.question?.id}`]);
 
 const toggleDialogOff = () => {
-    state.alternativePopUp = false;
+    state.tofPopUp = false;
     if (selected.value !== '') {
         answers[`${props.question?.id}`] = selected.value;
     }

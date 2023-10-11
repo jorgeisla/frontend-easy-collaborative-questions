@@ -4,4 +4,8 @@ const createQuestion = () => {
     return `${api}/question/`;
 };
 
-export { createQuestion };
+const listQuestionsFromVideo = (videoId: string) => {
+    return `${api}/video/${videoId}/list-questions`;
+};
+
+export { createQuestion, listQuestionsFromVideo };

@@ -117,7 +117,6 @@ const toggleDialogOff = () => {
 
 const onSubmit = async () => {
     try {
-        console.log('submit');
         const appearanceTime = minute.value * 60 + second.value;
         const true_or_false_question = { value: questionValue.value?.value };
         const payload = {
@@ -136,6 +135,7 @@ const onSubmit = async () => {
                 color: 'green',
                 position: 'top',
             });
+            toggleDialogOff();
         } else {
             $q.notify({
                 message: 'Error al crear pregunta.',
