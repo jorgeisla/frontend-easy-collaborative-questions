@@ -165,10 +165,19 @@ const handleCurrentTimeChange = (currentTime: number) => {
     }
 };
 
-const handleQuestionClick = (time: number) => {
-    if (questionTimes.value.includes(time)) {
-        question.value = timeAsKeyDictionary.value[time];
-        togglePopUpOn();
+const handleQuestionClick = (values: {
+    time: number;
+    questionType: string;
+}) => {
+    if (questionTimes.value.includes(values.time)) {
+        question.value = timeAsKeyDictionary.value[values.time];
+        if (values.questionType === 'AQ') {
+            togglePopUpOn();
+        } else if (values.questionType === 'EQ') {
+            toggleEssayQuestionPopUpOn();
+        } else if (values.questionType === 'TOFQ') {
+            toggleToFQuestionPopUpOn();
+        }
     }
 };
 
@@ -218,11 +227,11 @@ const listQuestions = async () => {
                 color: 'red',
             });
         }
-        questions.value = data.map((item) => {
+        questions.value = data.map((item: any) => {
             if (item.question_type === 'AQ') {
                 const answerOptions =
                     item.alternative_question.alternative_question_option.map(
-                        (alternativeOption) => {
+                        (alternativeOption: any) => {
                             return {
                                 label: alternativeOption.sentence,
                                 value: alternativeOption.id,

@@ -15,7 +15,7 @@
                     style="text-align: left"
                     clickable
                     v-ripple
-                    @click="questionClick(item.time)"
+                    @click="questionClick(item.time, item.type)"
                 >
                     <q-item-section>
                         <q-item-label>{{ item.questionHeader }}</q-item-label>
@@ -70,10 +70,12 @@ const discoveredQuestions = ref<Question[] | null>(
     props.discoveredQuestions ? Object.values(props.discoveredQuestions) : null
 );
 
-const emit = defineEmits<{ (e: 'question-click', val: number): number }>();
+const emit = defineEmits<{
+    (e: 'question-click', val: { time: number; questionType: string }): number;
+}>();
 
-const questionClick = (id: number) => {
-    emit('question-click', id);
+const questionClick = (time: number, questionType: string) => {
+    emit('question-click', { time: time, questionType: questionType });
 };
 
 const alreadyAnswer = (question: Question) => {
