@@ -55,6 +55,9 @@
             :videoTime="videoTime"
         ></CreateEssayQuestionForm>
     </div>
+    <div>
+        <QuestionPurposePopUp></QuestionPurposePopUp>
+    </div>
 </template>
 <script setup lang="ts">
 import DefaultVideoPlayer from 'src/components/video/DefaultVideoPlayer.vue';
@@ -73,6 +76,7 @@ import { useQuasar } from 'quasar';
 import { cloudfront } from 'src/utils/env-var';
 import CreateEssayQuestionForm from 'src/components/questions/CreateEssayQuestionForm.vue';
 import { listQuestionsFromVideo } from 'src/endpoints/questions';
+import QuestionPurposePopUp from 'src/components/pop-ups/QuestionPurposePopUp.vue';
 
 const $q = useQuasar();
 
@@ -88,6 +92,7 @@ const videoTime = ref(0);
 const createAlternativeQuestionState = reactive({ popUp: false });
 const createTOFQuestionState = reactive({ popUp: false });
 const createEssayQuestionState = reactive({ popUp: false });
+const proposalPopUpState = reactive({ popUp: true });
 
 const props = defineProps<{
     id: string;
@@ -105,6 +110,7 @@ provide('answers', answers);
 provide('createAlternativeQuestionState', createAlternativeQuestionState);
 provide('createTOFQuestionState', createTOFQuestionState);
 provide('createEssayQuestionState', createEssayQuestionState);
+provide('proposalPopUp', proposalPopUpState);
 
 const togglePopUpOn = () => {
     popUpComponentKey.value += 1;
