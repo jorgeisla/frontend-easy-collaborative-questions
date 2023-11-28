@@ -24,6 +24,7 @@ import { crudVideoApi } from 'src/endpoints/video';
 import { useQuasar } from 'quasar';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { api } from 'src/boot/axios';
 
 const router = useRouter();
 const $q = useQuasar();
@@ -35,7 +36,7 @@ const goToVideo = (id: string) => {
 
 const listAllVideos = async () => {
     try {
-        const { data, status } = await axios.get(crudVideoApi());
+        const { data, status } = await api.get(crudVideoApi());
         if (status !== 200) {
             $q.notify({
                 message: 'Error en la conexión con el servidor.',

@@ -34,6 +34,7 @@ import { userLogin } from 'src/endpoints/user';
 import { userStore } from 'src/stores/user-store';
 import { UserLoginResponse } from 'src/models/user/user';
 import { useRouter } from 'vue-router';
+import { api } from 'src/boot/axios';
 
 const router = useRouter();
 const username = ref('');
@@ -51,7 +52,7 @@ const passwordRules = [
 
 const login = async () => {
     try {
-        const { data, status } = await axios.post<UserLoginResponse>(
+        const { data, status } = await api.post<UserLoginResponse>(
             loginEndpoint,
             {},
             {

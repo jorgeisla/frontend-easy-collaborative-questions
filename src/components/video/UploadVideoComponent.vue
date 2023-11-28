@@ -49,6 +49,7 @@ import { ref } from 'vue';
 import { createUploadLink, crudVideoApi } from 'src/endpoints/video';
 import { useQuasar } from 'quasar';
 import { userStore } from 'src/stores/user-store';
+import { api } from 'src/boot/axios';
 
 const $q = useQuasar();
 const videoInput = ref();
@@ -71,7 +72,7 @@ const updateVideo = () => {
 
 const createUploadLinkAction = async () => {
     try {
-        const { data, status } = await axios.post(createUploadLink(), {
+        const { data, status } = await api.post(createUploadLink(), {
             files_extension: ['mp4'],
         });
         if (status !== 200) {
@@ -102,7 +103,7 @@ const createUploadLinkAction = async () => {
                 name: videoName.value,
                 length: duration,
             };
-            const videoCreationResponse = await axios.post(
+            const videoCreationResponse = await api.post(
                 crudVideoApi(),
                 videoPayload,
                 {

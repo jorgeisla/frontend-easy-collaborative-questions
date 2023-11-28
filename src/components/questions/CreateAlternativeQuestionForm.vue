@@ -154,6 +154,7 @@
 <script setup lang="ts">
 import { inject, ref, watch } from 'vue';
 import axios from 'axios';
+import { api } from 'src/boot/axios';
 import { useQuasar } from 'quasar';
 import { createQuestion } from 'src/endpoints/questions';
 import { useRoute } from 'vue-router';
@@ -171,7 +172,6 @@ const AlternativeFour = ref('');
 const minute = ref<number>(0);
 const second = ref<number>(0);
 const correctAlternative = ref();
-
 const route = useRoute();
 const videoIdFromUrl: number = parseInt(
     Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
@@ -220,7 +220,7 @@ const onSubmit = async () => {
             video: videoIdFromUrl,
         };
 
-        const { data, status } = await axios.post(createQuestion(), payload);
+        const { data, status } = await api.post(createQuestion(), payload);
 
         if (status === 201) {
             $q.notify({

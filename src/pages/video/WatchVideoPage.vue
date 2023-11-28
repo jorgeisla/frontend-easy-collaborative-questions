@@ -77,6 +77,7 @@ import { cloudfront } from 'src/utils/env-var';
 import CreateEssayQuestionForm from 'src/components/questions/CreateEssayQuestionForm.vue';
 import { listQuestionsFromVideo } from 'src/endpoints/questions';
 import QuestionPurposePopUp from 'src/components/pop-ups/QuestionPurposePopUp.vue';
+import { api } from 'src/boot/axios';
 
 const $q = useQuasar();
 
@@ -204,9 +205,7 @@ const handleEssayQuestionFormActivation = (time: number) => {
 
 const retrieveVideoLink = async () => {
     try {
-        const { data, status } = await axios.get(
-            retrieveDownloadLink(props.id)
-        );
+        const { data, status } = await api.get(retrieveDownloadLink(props.id));
         if (status !== 200) {
             $q.notify({
                 message: 'Error en la conexión con el servidor.',
@@ -224,7 +223,7 @@ const retrieveVideoLink = async () => {
 
 const listQuestions = async () => {
     try {
-        const { data, status } = await axios.get(
+        const { data, status } = await api.get(
             listQuestionsFromVideo(props.id)
         );
         if (status !== 200) {

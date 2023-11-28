@@ -76,6 +76,7 @@ import { useQuasar } from 'quasar';
 import { createQuestion } from 'src/endpoints/questions';
 import { inject, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { api } from 'src/boot/axios';
 
 const $q = useQuasar();
 const props = defineProps<{
@@ -107,7 +108,7 @@ const onSubmit = async () => {
             question_type: 'EQ',
         };
 
-        const { data, status } = await axios.post(createQuestion(), payload);
+        const { data, status } = await api.post(createQuestion(), payload);
 
         if (status === 201) {
             $q.notify({
