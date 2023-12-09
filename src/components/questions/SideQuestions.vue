@@ -4,7 +4,7 @@
             <q-toolbar class="bg-primary text-white">
                 <q-toolbar-title>Preguntas</q-toolbar-title>
                 <q-btn
-                    color="primary"
+                    color="green"
                     label="Enviar respuestas"
                     @click="sendAnswers()"
                     id="enviar-respuestas-button"

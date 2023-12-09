@@ -55,7 +55,7 @@
             :videoTime="videoTime"
         ></CreateEssayQuestionForm>
     </div>
-    <div>
+    <div v-if="store.getReminderPopUp">
         <QuestionPurposePopUp></QuestionPurposePopUp>
     </div>
 </template>
@@ -78,8 +78,10 @@ import CreateEssayQuestionForm from 'src/components/questions/CreateEssayQuestio
 import { listQuestionsFromVideo } from 'src/endpoints/questions';
 import QuestionPurposePopUp from 'src/components/pop-ups/QuestionPurposePopUp.vue';
 import { api } from 'src/boot/axios';
+import { userStore } from 'src/stores/user-store';
 
 const $q = useQuasar();
+const store = userStore();
 
 const videoUrl = ref();
 const state = reactive({

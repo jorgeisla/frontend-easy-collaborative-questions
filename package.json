@@ -9,15 +9,21 @@
         "lint": "eslint --ext .js,.ts,.vue ./",
         "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
         "test": "echo \"No test specified\" && exit 0",
-        "dev": "quasar dev"
+        "dev": "quasar dev",
+        "build": "quasar build",
+        "start": "node server.js",
+        "heroku-postbuild": "yarn && yarn build"
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^6.4.0",
         "@quasar/extras": "^1.0.0",
         "axios": "^1.2.1",
+        "connect-history-api-fallback": "^2.0.0",
+        "express": "^4.18.2",
         "pinia": "^2.1.6",
         "pinia-plugin-persistedstate": "^3.2.0",
         "quasar": "^2.6.0",
+        "serve-static": "^1.15.0",
         "vue": "^3.0.0",
         "vue-i18n": "^9.2.2",
         "vue-router": "^4.0.0"

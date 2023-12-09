@@ -5,11 +5,13 @@ export const userStore = defineStore('login', {
         username: '',
         token: '',
         email: '',
+        reminderPopUp: true,
     }),
     getters: {
         getToken: (state) => state.token,
         getUsername: (state) => state.username,
         getEmail: (state) => state.email,
+        getReminderPopUp: (state) => state.reminderPopUp,
     },
     actions: {
         setToken(token: string) {
@@ -20,6 +22,9 @@ export const userStore = defineStore('login', {
         },
         setEmail(email: string) {
             this.email = email;
+        },
+        setReminderPopUp(reminderPopUp: boolean) {
+            this.reminderPopUp = reminderPopUp;
         },
         setUserData(token: string, username: string, email: string) {
             this.setToken(token);
