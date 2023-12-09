@@ -12,7 +12,7 @@
         "dev": "quasar dev",
         "build": "quasar build",
         "start": "node server.js",
-        "heroku-postbuild": "npm install && npm install --only=dev && npm run build"
+        "heroku-postbuild": "npm install && npm install -g @quasar/cli && npm run build"
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^6.4.0",
