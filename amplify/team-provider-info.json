@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-collabquestions-dev-01922-authRole",
+      "UnauthRoleArn": "arn:aws:iam::664884927682:role/amplify-collabquestions-dev-01922-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::664884927682:role/amplify-collabquestions-dev-01922-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-collabquestions-dev-01922-deployment",
+      "UnauthRoleName": "amplify-collabquestions-dev-01922-unauthRole",
+      "StackName": "amplify-collabquestions-dev-01922",
+      "StackId": "arn:aws:cloudformation:us-east-2:664884927682:stack/amplify-collabquestions-dev-01922/c18e6780-9641-11ee-9943-06fb4e26efdb",
+      "AmplifyAppId": "d34qrhgpper8r7"
+    },
+    "categories": {
+      "hosting": {
+        "S3AndCloudFront": {}
+      }
+    }
+  }
+}
