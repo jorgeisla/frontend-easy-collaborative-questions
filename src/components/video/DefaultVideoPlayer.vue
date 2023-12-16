@@ -1,7 +1,7 @@
 <template>
     <div
         class="video-player-container"
-        @mouseenter="showControls = true"
+        @mouseenter="mouseEnterVideoPlayer"
         @mousemove="toggleVideoControlsOnForTwoSeconds"
         @mouseleave="toggleVideoControlsOffInstantly"
         @fullscreenchange="handleChangeFullScreen"
@@ -240,16 +240,40 @@ const toggleVideoControlsOff = () => {
     }
 };
 
+let mousePointerTimeoutId: any;
+
+const mouseEnterVideoPlayer = () => {
+    showControls.value = true;
+    mousePointerTimeoutId = setTimeout(function () {
+        if (videoPlayerContainer.value) {
+            videoPlayerContainer.value.style.cursor = 'none'; // Hide the mouse pointer
+        }
+    }, 2000); // 2000 milliseconds (2 seconds)
+    console.log(mousePointerTimeoutId, videoPlayerContainer.value);
+};
+
 const toggleVideoControlsOffInstantly = () => {
     if (videoIsPlayed.value) {
         showControls.value = false;
+    }
+    if (videoPlayerContainer.value) {
+        // Clear the timeout and restore the cursor style when the mouse leaves the div
+        clearTimeout(mousePointerTimeoutId);
+        videoPlayerContainer.value.style.cursor = 'pointer'; // Change to your desired default cursor style
     }
 };
 
 const toggleVideoControlsOnForTwoSeconds = () => {
     setMouseMove();
     clearAllTimeOuts();
+    clearTimeout(mousePointerTimeoutId);
+    videoPlayerContainer.value.style.cursor = 'pointer'; // Change to your desired default cursor style
     mouseMoving.value = true;
+    mousePointerTimeoutId = setTimeout(function () {
+        if (videoPlayerContainer.value) {
+            videoPlayerContainer.value.style.cursor = 'none'; // Hide the mouse pointer
+        }
+    }, 2000); // 2000 milliseconds (2 seconds)
     if (!toggleInProgress.value) {
         toggleInProgress.value = true;
         showControls.value = true;

@@ -16,5 +16,26 @@
         "S3AndCloudFront": {}
       }
     }
+  },
+  "collab": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-collabquestions-collab-122945-authRole",
+      "UnauthRoleArn": "arn:aws:iam::664884927682:role/amplify-collabquestions-collab-122945-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::664884927682:role/amplify-collabquestions-collab-122945-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-collabquestions-collab-122945-deployment",
+      "UnauthRoleName": "amplify-collabquestions-collab-122945-unauthRole",
+      "StackName": "amplify-collabquestions-collab-122945",
+      "StackId": "arn:aws:cloudformation:us-east-2:664884927682:stack/amplify-collabquestions-collab-122945/c909ae30-9b5e-11ee-b1c6-0aded0b145c9",
+      "AmplifyAppId": "dcszjjwo0mx6a"
+    },
+    "categories": {
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "dcszjjwo0mx6a",
+          "type": "cicd"
+        }
+      }
+    }
   }
 }
