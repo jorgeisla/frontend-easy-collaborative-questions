@@ -249,7 +249,6 @@ const mouseEnterVideoPlayer = () => {
             videoPlayerContainer.value.style.cursor = 'none'; // Hide the mouse pointer
         }
     }, 2000); // 2000 milliseconds (2 seconds)
-    console.log(mousePointerTimeoutId, videoPlayerContainer.value);
 };
 
 const toggleVideoControlsOffInstantly = () => {
