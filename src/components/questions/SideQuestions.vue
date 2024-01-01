@@ -5,7 +5,7 @@
                 <q-toolbar-title>Preguntas</q-toolbar-title>
                 <q-btn
                     color="green"
-                    label="Enviar respuestas"
+                    :label="buttonLabel"
                     @click="sendAnswers()"
                     id="enviar-respuestas-button"
                 />
@@ -45,7 +45,12 @@ import EnviarRespuestasSinResponderTodasLasPreguntasConfirm from 'src/components
 import { ref, inject, provide, reactive } from 'vue';
 import { useQuasar } from 'quasar';
 import { formatTime } from 'src/utils';
+import { api } from 'src/boot/axios';
+import axios from 'axios';
+import { createQuestionAnswer } from 'src/endpoints/questionAnswers';
 const $q = useQuasar();
+
+const buttonLabel = ref('Enviar respuestas');
 
 const props = defineProps<{
     discoveredQuestions: { [key: number]: Question } | null;
@@ -101,13 +106,46 @@ const sendAnswers = () => {
     }
 };
 
-const handleAnswersSent = () => {
-    answerSent.value = true;
-    const enviarRespuestasButton = document.getElementById(
-        'enviar-respuestas-button'
-    );
-    enviarRespuestasButton?.setAttribute('disabled', '');
-    return;
+const handleAnswersSent = async () => {
+    try {
+        const payload = [];
+        for (const [key, value] of Object.entries(answers)) {
+            payload.push({
+                question: parseInt(key),
+                answer: value,
+            });
+        }
+        console.log(payload);
+        const { data, status } = await api.post(
+            createQuestionAnswer(),
+            payload
+        );
+        if (status !== 201) {
+            $q.notify({
+                message: 'Error al crear link de subida.',
+                color: 'red',
+            });
+        }
+        answerSent.value = true;
+        const enviarRespuestasButton = document.getElementById(
+            'enviar-respuestas-button'
+        );
+        enviarRespuestasButton?.setAttribute('disabled', '');
+        buttonLabel.value = 'Respuestas enviadas';
+        $q.notify({
+            type: 'positive',
+            message: 'Las respuestas han sido enviadas con éxito.',
+            position: 'top',
+        });
+        return;
+    } catch (e) {
+        $q.notify({
+            type: 'negative',
+            message: 'Error al enviar las respuestas.',
+            position: 'top',
+        });
+        return;
+    }
 };
 
 const checkAllQuestionsAnswered = () => {
