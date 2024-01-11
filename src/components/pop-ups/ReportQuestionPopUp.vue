@@ -31,16 +31,38 @@
 <script setup lang="ts">
 import { inject, ref } from 'vue';
 import { useQuasar } from 'quasar';
+import { Question } from 'src/models/video/pop-up';
+import { api } from 'src/boot/axios';
+import { createReport } from 'src/endpoints/reports';
 const $q = useQuasar();
+const props = defineProps<{
+    question: Question | null;
+}>();
 
 const reportQuestionPopUpState: any = inject('reportQuestionPopUpState');
 const text = ref();
-const reportQuestion = () => {
-    $q.notify({
-        message: 'Pregunta reportada.',
-        color: 'green',
-        position: 'top',
-    });
-    return false;
+const reportQuestion = async () => {
+    try {
+        const payload = {
+            question: props.question?.id,
+            description: text.value,
+        };
+        const { data, status } = await api.post(createReport(), payload);
+
+        if (status !== 201) {
+            $q.notify({
+                message: 'Pregunta reportada.',
+                color: 'green',
+                position: 'top',
+            });
+        }
+        return false;
+    } catch (error) {
+        $q.notify({
+            message: 'Error al reportar la pregunta.',
+            color: 'red',
+            position: 'top',
+        });
+    }
 };
 </script>

@@ -36,7 +36,7 @@
             </q-card-actions>
         </q-card>
     </q-dialog>
-    <ReportQuestionPopUp></ReportQuestionPopUp>
+    <ReportQuestionPopUp :question="props.question"></ReportQuestionPopUp>
 </template>
 <script setup lang="ts">
 import { Question } from 'src/models/video/pop-up';

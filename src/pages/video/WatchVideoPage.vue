@@ -70,7 +70,6 @@ import CreateAlternativeQuestionForm from 'src/components/questions/CreateAltern
 import CreateTrueorFalseQuestionForm from 'src/components/questions/CreateTrueorFalseQuestionForm.vue';
 import { reactive, provide, ref, Ref } from 'vue';
 import { Question } from 'src/models/video/pop-up';
-import axios from 'axios';
 import { retrieveDownloadLink } from 'src/endpoints/video';
 import { useQuasar } from 'quasar';
 import { cloudfront } from 'src/utils/env-var';

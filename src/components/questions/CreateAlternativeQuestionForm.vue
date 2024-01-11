@@ -153,7 +153,6 @@
 </template>
 <script setup lang="ts">
 import { inject, ref, watch } from 'vue';
-import axios from 'axios';
 import { api } from 'src/boot/axios';
 import { useQuasar } from 'quasar';
 import { createQuestion } from 'src/endpoints/questions';
