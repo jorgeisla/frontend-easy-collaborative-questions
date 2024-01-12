@@ -1,34 +1,48 @@
 <template>
-    <q-card class="q-pa-md">
-        <q-form class="q-gutter-md" @submit="login">
-            <q-input
-                v-model="username"
-                filled
-                label="Usuario"
-                :rules="usernameRules"
-            ></q-input>
-            <q-input
-                v-model="password"
-                type="password"
-                filled
-                label="Contraseña"
-                :rules="passwordRules"
-            ></q-input>
-            <div class="text-center">
-                <q-btn
-                    color="white"
-                    text-color="black"
-                    label="Ingresar"
-                    size="md"
-                    type="submit"
-                />
+    <q-card class="q-pa-md" style="background-color: white">
+        <div style="padding: 20px">
+            <div
+                style="
+                    margin-bottom: 50px;
+                    padding-top: 20px;
+                    align-items: center;
+                    text-align: center;
+                    font-weight: 500;
+                    font-size: 30px;
+                    color: black;
+                "
+            >
+                Collaborative Questions
             </div>
-        </q-form>
+            <q-form class="q-gutter-md" @submit="login" style="">
+                <q-input
+                    v-model="username"
+                    filled
+                    label="Usuario"
+                    :rules="usernameRules"
+                ></q-input>
+                <q-input
+                    v-model="password"
+                    type="password"
+                    filled
+                    label="Contraseña"
+                    :rules="passwordRules"
+                ></q-input>
+                <div class="text-center">
+                    <q-btn
+                        text-color="white"
+                        label="Ingresar"
+                        size="md"
+                        type="submit"
+                        style="background-color: rgba(0, 210, 255)"
+                    />
+                </div>
+            </q-form>
+        </div>
     </q-card>
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
-import axios from 'axios';
 import { useQuasar } from 'quasar';
 import { userLogin } from 'src/endpoints/user';
 import { userStore } from 'src/stores/user-store';
