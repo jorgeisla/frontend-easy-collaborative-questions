@@ -12,7 +12,7 @@
             </q-toolbar>
             <div v-for="(item, index) in discoveredQuestions" :key="index">
                 <q-item
-                    style="text-align: left"
+                    style="text-align: left; background-color: white"
                     clickable
                     v-ripple
                     @click="questionClick(item.time, item.type)"

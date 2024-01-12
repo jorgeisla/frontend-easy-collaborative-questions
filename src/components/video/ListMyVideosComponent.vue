@@ -1,25 +1,49 @@
 <template>
-    <div class="q-ma-md row">
+    <div
+        style="
+            background-image: linear-gradient(
+                    rgba(0, 0, 0, 0.7),
+                    rgba(0, 0, 0, 0.7)
+                ),
+                url('collaboration_background.png');
+            background-repeat: no-repeat;
+            background-size: cover;
+            margin: 0%;
+            padding: 0%;
+            height: 100vh;
+        "
+    >
         <div
-            class="col-5 q-ma-md"
-            style="max-width: 400px"
-            v-for="(item, index) in videos"
-            :key="index"
+            style="
+                color: white;
+                font-weight: 700;
+                font-size: 2.5em;
+                padding: 1%;
+            "
         >
-            <div @click="goToVideo(item.id)">
-                <q-card class="q-ma-sm hover-div">
-                    <img src="https://cdn.quasar.dev/img/mountains.jpg" />
+            Mis Clases
+        </div>
+        <div class="q-ma-md row">
+            <div
+                class="col-5 q-ma-md"
+                style="max-width: 400px"
+                v-for="(item, index) in videos"
+                :key="index"
+            >
+                <div @click="goToVideo(item.id)">
+                    <q-card class="q-ma-sm hover-div">
+                        <img src="https://cdn.quasar.dev/img/mountains.jpg" />
 
-                    <q-card-section>
-                        <div class="text-h6">{{ item.name }}</div>
-                    </q-card-section>
-                </q-card>
+                        <q-card-section>
+                            <div class="text-h6">{{ item.name }}</div>
+                        </q-card-section>
+                    </q-card>
+                </div>
             </div>
         </div>
     </div>
 </template>
 <script setup lang="ts">
-import axios from 'axios';
 import { crudVideoApi } from 'src/endpoints/video';
 import { useQuasar } from 'quasar';
 import { ref } from 'vue';

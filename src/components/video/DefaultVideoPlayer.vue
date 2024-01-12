@@ -392,7 +392,7 @@ onMounted(() => {
 
 /* Video player control bar */
 .video-controls {
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.3);
     color: #fff;
     display: flex;
     flex-direction: column;

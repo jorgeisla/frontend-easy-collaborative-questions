@@ -1,5 +1,17 @@
 <template>
-    <div class="row q-pt-xl">
+    <div
+        class="row q-pt-xl"
+        style="
+            background-image: linear-gradient(
+                    rgba(0, 0, 0, 0.85),
+                    rgba(0, 0, 0, 0.85)
+                ),
+                url('collaboration_background.png');
+            background-repeat: no-repeat;
+            background-size: cover;
+            height: 100vh;
+        "
+    >
         <div class="col-md-8 col-xs-12" style="text-align: center">
             <DefaultVideoPlayer
                 v-on:current-time-change="handleCurrentTimeChange"
