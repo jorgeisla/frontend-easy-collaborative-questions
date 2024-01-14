@@ -13,8 +13,8 @@
             background-size: cover;
         "
     >
-        <div style="width: 60%; padding: 5%; padding-left: 10%">
-            <div style="font-size: 3em; color: white; font-weight: 700">
+        <div style="width: 60%; padding: 3%; padding-left: 5%">
+            <div style="font-size: 2.5em; color: white; font-weight: 700">
                 Bienvenido a Collaborative Questions
             </div>
             <div>
@@ -23,14 +23,14 @@
                         font-size: 1.5em;
                         color: white;
                         font-weight: 700;
-                        margin-top: 60px;
+                        padding-top: 30px;
                     "
                 >
                     ¿Qué es Collaborative Questions?
                 </div>
                 <div
                     style="
-                        margin-top: 30px;
+                        padding-top: 30px;
                         font-size: 1em;
                         color: white;
                         font-weight: 500;
@@ -46,14 +46,14 @@
                         font-size: 1.5em;
                         color: white;
                         font-weight: 700;
-                        margin-top: 60px;
+                        padding-top: 60px;
                     "
                 >
                     ¿Como se pretende lograr esto?
                 </div>
                 <div
                     style="
-                        margin-top: 30px;
+                        padding-top: 30px;
                         font-size: 1em;
                         color: white;
                         font-weight: 500;
@@ -78,7 +78,7 @@
                 height: 100%;
                 width: 40%;
                 padding-top: 20vh;
-                padding-right: 10%;
+                padding-right: 5%;
                 padding-left: 10%;
             "
         >
