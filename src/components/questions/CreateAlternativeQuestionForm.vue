@@ -162,6 +162,7 @@ const $q = useQuasar();
 const props = defineProps<{
     videoTime: number;
 }>();
+const emit = defineEmits<{ (e: 'created-question'): boolean }>();
 
 const questionHeader = ref('');
 const alternativeOne = ref('');
@@ -228,6 +229,7 @@ const onSubmit = async () => {
                 position: 'top',
             });
             toggleDialogOff();
+            emit('created-question');
         } else {
             $q.notify({
                 message: 'Error al crear pregunta.',

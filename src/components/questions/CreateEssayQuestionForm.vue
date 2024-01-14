@@ -71,12 +71,13 @@
     </q-dialog>
 </template>
 <script setup lang="ts">
-import axios from 'axios';
 import { useQuasar } from 'quasar';
 import { createQuestion } from 'src/endpoints/questions';
 import { inject, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { api } from 'src/boot/axios';
+
+const emit = defineEmits<{ (e: 'created-question'): boolean }>();
 
 const $q = useQuasar();
 const props = defineProps<{
@@ -117,6 +118,7 @@ const onSubmit = async () => {
                 position: 'top',
             });
             toggleDialogOff();
+            emit('created-question');
         } else {
             $q.notify({
                 message: 'Error al crear pregunta.',

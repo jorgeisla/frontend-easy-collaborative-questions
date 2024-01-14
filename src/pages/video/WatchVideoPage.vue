@@ -55,16 +55,19 @@
     <div>
         <CreateAlternativeQuestionForm
             :videoTime="videoTime"
+            @created-question="createdOneQuestion = true"
         ></CreateAlternativeQuestionForm>
     </div>
     <div>
         <CreateTrueorFalseQuestionForm
             :videoTime="videoTime"
+            @created-question="createdOneQuestion = true"
         ></CreateTrueorFalseQuestionForm>
     </div>
     <div>
         <CreateEssayQuestionForm
             :videoTime="videoTime"
+            @created-question="createdOneQuestion = true"
         ></CreateEssayQuestionForm>
     </div>
     <div v-if="store.getReminderPopUp">
@@ -80,7 +83,7 @@ import TOFQuestionPopUp from 'src/components/pop-ups/TOFQuestionPopUp.vue';
 // import AnswersChecker from 'src/components/answers/AnswersChecker.vue';
 import CreateAlternativeQuestionForm from 'src/components/questions/CreateAlternativeQuestionForm.vue';
 import CreateTrueorFalseQuestionForm from 'src/components/questions/CreateTrueorFalseQuestionForm.vue';
-import { reactive, provide, ref, Ref } from 'vue';
+import { reactive, provide, ref, Ref, onBeforeUnmount } from 'vue';
 import { Question } from 'src/models/video/pop-up';
 import { retrieveDownloadLink } from 'src/endpoints/video';
 import { useQuasar } from 'quasar';
@@ -95,6 +98,7 @@ const $q = useQuasar();
 const store = userStore();
 
 const videoUrl = ref();
+const createdOneQuestion = ref<boolean>(false);
 const state = reactive({
     essayPopUp: false,
     tofPopUp: false,
@@ -125,6 +129,24 @@ provide('createAlternativeQuestionState', createAlternativeQuestionState);
 provide('createTOFQuestionState', createTOFQuestionState);
 provide('createEssayQuestionState', createEssayQuestionState);
 provide('proposalPopUp', proposalPopUpState);
+
+// Start the timer when the component is mounted
+const timerInterval = setInterval(() => {
+    if (!createdOneQuestion.value) {
+        $q.notify({
+            message:
+                'Recuerda que debes realizar al menos una pregunta en este video.',
+            color: 'accent',
+            position: 'top',
+            timeout: 5000,
+        });
+    }
+}, 180000); // 180 seconds (180,000 milliseconds)
+
+// Clear the timer when the component is destroyed to prevent memory leaks
+onBeforeUnmount(() => {
+    clearInterval(timerInterval);
+});
 
 const togglePopUpOn = () => {
     popUpComponentKey.value += 1;
@@ -295,4 +317,14 @@ const listQuestions = async () => {
 };
 
 await Promise.allSettled([listQuestions(), retrieveVideoLink()]);
+
+setTimeout(() => {
+    $q.notify({
+        message:
+            'Recuerda que debes realizar al menos una pregunta en este video.',
+        color: 'accent',
+        position: 'top',
+        timeout: 5000,
+    });
+}, 10000); // 10 seconds (10,000 milliseconds)
 </script>
