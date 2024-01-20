@@ -31,12 +31,12 @@
                 :key="sideQuestionsComponentKey"
             />
         </div>
-    </div>
-    <!-- <div class="row q-pt-xl">
-        <div class="col-md-12 col-xs-12" style="text-align: center">
-            <AnswersChecker :questions="questions" />
+        <div class="row">
+            <div class="col-md-12 col-xs-12" style="text-align: center">
+                <CreatedQuestions :key="createdQuestionsComponentKey" />
+            </div>
         </div>
-    </div> -->
+    </div>
     <div>
         <QuestionPopUp :question="question" :key="popUpComponentKey" />
     </div>
@@ -55,19 +55,19 @@
     <div>
         <CreateAlternativeQuestionForm
             :videoTime="videoTime"
-            @created-question="createdOneQuestion = true"
+            @created-question="createdQuestionEvent"
         ></CreateAlternativeQuestionForm>
     </div>
     <div>
-        <CreateTrueorFalseQuestionForm
+        <CreateTrueOrFalseQuestionForm
             :videoTime="videoTime"
-            @created-question="createdOneQuestion = true"
-        ></CreateTrueorFalseQuestionForm>
+            @created-question="createdQuestionEvent"
+        ></CreateTrueOrFalseQuestionForm>
     </div>
     <div>
         <CreateEssayQuestionForm
             :videoTime="videoTime"
-            @created-question="createdOneQuestion = true"
+            @created-question="createdQuestionEvent"
         ></CreateEssayQuestionForm>
     </div>
     <div v-if="store.getReminderPopUp">
@@ -82,7 +82,8 @@ import SideQuestions from 'src/components/questions/SideQuestions.vue';
 import TOFQuestionPopUp from 'src/components/pop-ups/TOFQuestionPopUp.vue';
 // import AnswersChecker from 'src/components/answers/AnswersChecker.vue';
 import CreateAlternativeQuestionForm from 'src/components/questions/CreateAlternativeQuestionForm.vue';
-import CreateTrueorFalseQuestionForm from 'src/components/questions/CreateTrueorFalseQuestionForm.vue';
+import CreateTrueOrFalseQuestionForm from 'src/components/questions/CreateTrueOrFalseQuestionForm.vue';
+import CreatedQuestions from 'src/components/questions/CreatedQuestions.vue';
 import { reactive, provide, ref, Ref, onBeforeUnmount } from 'vue';
 import { Question } from 'src/models/video/pop-up';
 import { retrieveDownloadLink } from 'src/endpoints/video';
@@ -119,6 +120,7 @@ const props = defineProps<{
 const answers = reactive({});
 
 const sideQuestionsComponentKey = ref(0);
+const createdQuestionsComponentKey = ref(0);
 const popUpComponentKey = ref(0);
 const timeAsKeyDictionary = ref<{ [key: number]: Question }>({});
 const questionTimes = ref<number[]>([]);
@@ -316,8 +318,6 @@ const listQuestions = async () => {
     }
 };
 
-await Promise.allSettled([listQuestions(), retrieveVideoLink()]);
-
 setTimeout(() => {
     $q.notify({
         message:
@@ -327,4 +327,11 @@ setTimeout(() => {
         timeout: 5000,
     });
 }, 10000); // 10 seconds (10,000 milliseconds)
+
+const createdQuestionEvent = () => {
+    createdQuestionsComponentKey.value += 1;
+    createdOneQuestion.value = true;
+};
+
+await Promise.allSettled([listQuestions(), retrieveVideoLink()]);
 </script>
