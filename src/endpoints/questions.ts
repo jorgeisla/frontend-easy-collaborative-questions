@@ -4,6 +4,10 @@ const createQuestion = () => {
     return `${api}/question/`;
 };
 
+const editQuestion = (id: number) => {
+    return `${api}/question/${id}/`;
+};
+
 const listQuestionsFromVideo = (videoId: string) => {
     return `${api}/video/${videoId}/list-questions`;
 };
@@ -16,4 +20,5 @@ export {
     createQuestion,
     listQuestionsFromVideo,
     listQuestionsCreatedByUserNoMoreThanCertainTimeAgo,
+    editQuestion,
 };

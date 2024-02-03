@@ -156,6 +156,7 @@ import { inject, ref } from 'vue';
 import { api } from 'src/boot/axios';
 import { useQuasar } from 'quasar';
 import { CreatedQuestion } from 'src/models/video/pop-up';
+import { editQuestion } from 'src/endpoints/questions';
 
 const $q = useQuasar();
 const props = defineProps<{
@@ -186,6 +187,7 @@ const determineCorrectAlternative = () => {
 determineCorrectAlternative();
 
 const state: any = inject('state');
+const endpoint = editQuestion(props.question.id);
 
 const toggleDialogOff = () => {
     state.alternativePopUp = false;
@@ -223,14 +225,13 @@ const onSubmit = async () => {
             alternative_question: alternative_question,
             header: questionHeader.value,
             appearance_time: appearanceTime,
-            question_type: 'AQ',
         };
 
-        const { data, status } = await api.post('', payload);
+        const { data, status } = await api.patch(endpoint, payload);
 
-        if (status === 201) {
+        if (status === 200) {
             $q.notify({
-                message: 'Pregunta creada con éxito.',
+                message: 'Pregunta editada con éxito.',
                 color: 'green',
                 position: 'top',
             });
@@ -238,7 +239,7 @@ const onSubmit = async () => {
             emit('updated-question');
         } else {
             $q.notify({
-                message: 'Error al crear pregunta.',
+                message: 'Error al editar pregunta.',
                 color: 'red',
                 position: 'top',
             });
