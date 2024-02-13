@@ -1,14 +1,10 @@
 <template>
     <div class="q-pa-md" style="width: 100%">
         <q-list bordered separator>
-            <q-toolbar class="bg-primary text-white">
-                <q-toolbar-title>Preguntas</q-toolbar-title>
-                <q-btn
-                    color="green"
-                    :label="buttonLabel"
-                    @click="sendAnswers()"
-                    id="enviar-respuestas-button"
-                />
+            <q-toolbar class="bg-primary text-white" style="display: block">
+                <q-toolbar-title class="q-pt-md"
+                    >Preguntas encontradas</q-toolbar-title
+                >
             </q-toolbar>
             <div v-for="(item, index) in discoveredQuestions" :key="index">
                 <q-item
@@ -31,6 +27,15 @@
                 </q-item>
                 <q-separator />
             </div>
+            <q-toolbar class="bg-primary text-white" style="display: block">
+                <q-btn
+                    color="green"
+                    :label="buttonLabel"
+                    @click="sendAnswers()"
+                    id="enviar-respuestas-button"
+                    class="q-my-sm"
+                />
+            </q-toolbar>
         </q-list>
         <EnviarRespuestasConfirm v-on:answers-sent="handleAnswersSent" />
         <EnviarRespuestasSinResponderTodasLasPreguntasConfirm

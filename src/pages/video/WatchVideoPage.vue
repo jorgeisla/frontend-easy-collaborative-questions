@@ -1,6 +1,6 @@
 <template>
     <div
-        class="row q-pt-xl"
+        class="row q-pt-md"
         style="
             background-image: linear-gradient(
                     rgba(0, 0, 0, 0.85),
@@ -13,6 +13,11 @@
         "
     >
         <div class="col-md-8 col-xs-12" style="text-align: center">
+            <div style="text-align: left" class="q-ma-md">
+                <q-btn @click="goBack()" class="text-white" color="primary"
+                    >Volver</q-btn
+                >
+            </div>
             <DefaultVideoPlayer
                 v-on:current-time-change="handleCurrentTimeChange"
                 :url="videoUrl"
@@ -80,7 +85,6 @@ import QuestionPopUp from 'src/components/pop-ups/QuestionPopUp.vue';
 import EssayQuestionPopUp from 'src/components/pop-ups/EssayQuestionPopUp.vue';
 import SideQuestions from 'src/components/questions/SideQuestions.vue';
 import TOFQuestionPopUp from 'src/components/pop-ups/TOFQuestionPopUp.vue';
-// import AnswersChecker from 'src/components/answers/AnswersChecker.vue';
 import CreateAlternativeQuestionForm from 'src/components/questions/CreateAlternativeQuestionForm.vue';
 import CreateTrueOrFalseQuestionForm from 'src/components/questions/CreateTrueOrFalseQuestionForm.vue';
 import CreatedQuestions from 'src/components/questions/CreatedQuestions.vue';
@@ -94,10 +98,14 @@ import { listQuestionsFromVideo } from 'src/endpoints/questions';
 import QuestionPurposePopUp from 'src/components/pop-ups/QuestionPurposePopUp.vue';
 import { api } from 'src/boot/axios';
 import { userStore } from 'src/stores/user-store';
-
+import { useRouter } from 'vue-router';
 const $q = useQuasar();
 const store = userStore();
+const router = useRouter();
 
+const goBack = () => {
+    router.go(-1);
+};
 const videoUrl = ref();
 const createdOneQuestion = ref<boolean>(false);
 const state = reactive({
