@@ -1,5 +1,5 @@
 <template>
-    <div class="q-px-md" style="width: 100%">
+    <div style="width: 100%">
         <q-list bordered separator class="bg-primary">
             <q-toolbar class="bg-primary text-white">
                 <q-toolbar-title>Preguntas creadas</q-toolbar-title>
@@ -31,16 +31,19 @@
                 v-if="state.alternativePopUp"
                 :key="createdQuestionItem.id"
                 :question="createdQuestionItem"
+                @updated-question="updatedQuestion()"
             ></EditAlternativeQuestionForm>
             <EditTrueOrFalseQuestionForm
                 v-if="state.tofPopUp"
                 :key="createdQuestionItem.id"
                 :question="createdQuestionItem"
+                @updated-question="updatedQuestion()"
             ></EditTrueOrFalseQuestionForm>
             <EditEssayQuestionForm
                 v-if="state.essayPopUp"
                 :key="createdQuestionItem.id"
                 :question="createdQuestionItem"
+                @updated-question="updatedQuestion()"
             ></EditEssayQuestionForm>
         </div>
     </div>
@@ -68,6 +71,12 @@ const state = reactive({
 provide('state', state);
 const createdQuestionItem = ref<CreatedQuestion>();
 
+const emit = defineEmits([
+    'updated-question',
+    'deleted-question',
+    'created-questions-number',
+]);
+
 const activateEditQuestionsPopUp = (item: CreatedQuestion, flag: string) => {
     createdQuestionItem.value = item;
     state.alternativePopUp = false;
@@ -92,6 +101,9 @@ const listQuestions = async () => {
                 message: 'Error en la conexión con el servidor.',
                 color: 'red',
             });
+        }
+        if (data.length > 0) {
+            emit('created-questions-number', data.length);
         }
         questions.value = data.map((item: any) => {
             let correctAnswer: any = null;
@@ -155,12 +167,17 @@ const deleteQuestion = async (questionId: number) => {
                 color: 'red',
             });
         }
+        emit('updated-question');
     } catch (e) {
         $q.notify({
             message: 'Error al eliminar pregunta',
             color: 'red',
         });
     }
+};
+
+const updatedQuestion = () => {
+    emit('deleted-question');
 };
 await Promise.allSettled([listQuestions()]);
 </script>

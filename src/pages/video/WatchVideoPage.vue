@@ -29,17 +29,46 @@
             />
         </div>
         <div class="col-md-4 col-xs-12" style="text-align: center">
-            <SideQuestions
-                v-on:question-click="handleQuestionClick"
-                :discovered-questions="discoverQuestions"
-                :questions="questions"
-                :key="sideQuestionsComponentKey"
-            />
-        </div>
-        <div class="row">
-            <div class="col-md-12 col-xs-12" style="text-align: center">
-                <CreatedQuestions :key="createdQuestionsComponentKey" />
-            </div>
+            <q-tabs
+                v-model="tab"
+                inline-label
+                class="bg-primary text-white shadow-2 q-mr-md"
+            >
+                <q-tab name="sideQuestions" label="Preguntas encontradas" />
+                <q-tab name="createdQuestions" label="Preguntas creadas" />
+            </q-tabs>
+            <q-tab-panels
+                v-model="tab"
+                animated
+                class="bg-primary text-white q-mr-md"
+            >
+                <q-tab-panel name="sideQuestions">
+                    <SideQuestions
+                        v-on:question-click="handleQuestionClick"
+                        @answers-sent="
+                            () => {
+                                answerSent = true;
+                            }
+                        "
+                        :discovered-questions="discoverQuestions"
+                        :questions="questions"
+                        :createdAtLeastOneQuestion="createdOneQuestion"
+                        :key="sideQuestionsComponentKey"
+                        :answer-sent="answerSent"
+                    />
+                </q-tab-panel>
+
+                <q-tab-panel name="createdQuestions">
+                    <CreatedQuestions
+                        :key="createdQuestionsComponentKey"
+                        @updated-question="updatedQuestionEvent()"
+                        @deleted-question="deleteQuestionEvent()"
+                        @created-questions-number="
+                            createdQuestionNumberEvent($event)
+                        "
+                    />
+                </q-tab-panel>
+            </q-tab-panels>
         </div>
     </div>
     <div>
@@ -102,6 +131,8 @@ import { useRouter } from 'vue-router';
 const $q = useQuasar();
 const store = userStore();
 const router = useRouter();
+const tab = ref('createdQuestions');
+const answerSent = ref(false);
 
 const goBack = () => {
     router.go(-1);
@@ -336,10 +367,43 @@ setTimeout(() => {
     });
 }, 10000); // 10 seconds (10,000 milliseconds)
 
+const createdQuestionsCounter = ref(0);
+
 const createdQuestionEvent = () => {
     createdQuestionsComponentKey.value += 1;
     createdOneQuestion.value = true;
+    createdQuestionsCounter.value += 1;
 };
+
+const updatedQuestionEvent = () => {
+    createdQuestionsComponentKey.value += 1;
+};
+
+const deleteQuestionEvent = () => {
+    createdQuestionsComponentKey.value += 1;
+    createdQuestionsCounter.value -= 1;
+    if (createdQuestionsCounter.value === 0) {
+        createdOneQuestion.value = false;
+    }
+};
+
+const createdQuestionNumberEvent = (createdQuestionNumberFromEvent: number) => {
+    createdQuestionsCounter.value = createdQuestionNumberFromEvent;
+    createdOneQuestion.value = true;
+};
+import { onBeforeRouteLeave } from 'vue-router';
+
+onBeforeRouteLeave((to, from, next) => {
+    if (!answerSent.value) {
+        next(
+            confirm(
+                'Estas seguro que quieres salir? Las respuestas no han sido enviadas.'
+            )
+        );
+    } else {
+        next();
+    }
+});
 
 await Promise.allSettled([listQuestions(), retrieveVideoLink()]);
 </script>
