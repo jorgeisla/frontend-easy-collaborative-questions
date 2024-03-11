@@ -1,14 +1,10 @@
 <template>
-    <div class="q-pa-md" style="width: 100%">
+    <div style="width: 100%">
         <q-list bordered separator>
-            <q-toolbar class="bg-primary text-white">
-                <q-toolbar-title>Preguntas</q-toolbar-title>
-                <q-btn
-                    color="green"
-                    :label="buttonLabel"
-                    @click="sendAnswers()"
-                    id="enviar-respuestas-button"
-                />
+            <q-toolbar class="bg-primary text-white" style="display: block">
+                <q-toolbar-title class="q-pt-md"
+                    >Preguntas encontradas</q-toolbar-title
+                >
             </q-toolbar>
             <div v-for="(item, index) in discoveredQuestions" :key="index">
                 <q-item
@@ -31,6 +27,26 @@
                 </q-item>
                 <q-separator />
             </div>
+            <q-toolbar class="bg-primary text-white" style="display: block">
+                <q-btn
+                    color="green"
+                    :label="buttonLabel"
+                    @click="sendAnswers()"
+                    id="enviar-respuestas-button"
+                    class="q-my-sm"
+                    :disable="
+                        props.answerSent || !props.createdAtLeastOneQuestion
+                    "
+                >
+                    <q-tooltip
+                        class="text-body1"
+                        v-if="!props.createdAtLeastOneQuestion"
+                    >
+                        Debes crear al menos una pregunta para poder enviar tus
+                        respuestas !!
+                    </q-tooltip>
+                </q-btn>
+            </q-toolbar>
         </q-list>
         <EnviarRespuestasConfirm v-on:answers-sent="handleAnswersSent" />
         <EnviarRespuestasSinResponderTodasLasPreguntasConfirm
@@ -46,7 +62,6 @@ import { ref, inject, provide, reactive } from 'vue';
 import { useQuasar } from 'quasar';
 import { formatTime } from 'src/utils';
 import { api } from 'src/boot/axios';
-import axios from 'axios';
 import { createQuestionAnswer } from 'src/endpoints/questionAnswers';
 const $q = useQuasar();
 
@@ -55,9 +70,10 @@ const buttonLabel = ref('Enviar respuestas');
 const props = defineProps<{
     discoveredQuestions: { [key: number]: Question } | null;
     questions: Question[] | null;
+    createdAtLeastOneQuestion: boolean;
+    answerSent: boolean;
 }>();
 const answers: any = inject('answers');
-const answerSent = ref(false);
 
 const confirmAnswersPopUpState = reactive({
     popUp: false,
@@ -77,6 +93,7 @@ const discoveredQuestions = ref<Question[] | null>(
 
 const emit = defineEmits<{
     (e: 'question-click', val: { time: number; questionType: string }): number;
+    (e: 'answers-sent', val: boolean): void;
 }>();
 
 const questionClick = (time: number, questionType: string) => {
@@ -91,7 +108,7 @@ const alreadyAnswer = (question: Question) => {
 };
 
 const sendAnswers = () => {
-    if (answerSent.value) {
+    if (props.answerSent) {
         $q.notify({
             type: 'negative',
             message: 'Las respuestas ya fueron enviadas',
@@ -115,7 +132,6 @@ const handleAnswersSent = async () => {
                 answer: value,
             });
         }
-        console.log(payload);
         const { data, status } = await api.post(
             createQuestionAnswer(),
             payload
@@ -126,7 +142,7 @@ const handleAnswersSent = async () => {
                 color: 'red',
             });
         }
-        answerSent.value = true;
+        emit('answers-sent', true);
         const enviarRespuestasButton = document.getElementById(
             'enviar-respuestas-button'
         );
