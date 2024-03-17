@@ -92,7 +92,7 @@ const login = async () => {
         }
     } catch {
         $q.notify({
-            message: 'Ha ocurrido un error en la comunicacion con el servidor.',
+            message: 'Error al iniciar sesión, verifique usuario y contraseña.',
             color: 'red',
             position: 'top',
         });

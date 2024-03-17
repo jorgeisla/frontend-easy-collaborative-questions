@@ -25,14 +25,14 @@
         </div>
         <div class="q-ma-md row">
             <div
-                class="col-5 q-ma-md"
-                style="max-width: 400px"
+                class="col-12 q-ma-sm"
+                style="max-width: 300px"
                 v-for="(item, index) in videos"
                 :key="index"
             >
                 <div @click="goToVideo(item.id)">
                     <q-card class="q-ma-sm hover-div">
-                        <img src="https://cdn.quasar.dev/img/mountains.jpg" />
+                        <img src="/collaboration_students.png" />
 
                         <q-card-section>
                             <div class="text-h6">{{ item.name }}</div>
