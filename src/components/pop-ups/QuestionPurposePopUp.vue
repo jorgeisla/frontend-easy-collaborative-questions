@@ -28,7 +28,7 @@
     </q-dialog>
 </template>
 <script lang="ts" setup>
-import { defineEmits, inject } from 'vue';
+import { inject } from 'vue';
 import { userStore } from 'src/stores/user-store';
 
 const popUpState: { popUp: boolean } = inject('proposalPopUp') as {

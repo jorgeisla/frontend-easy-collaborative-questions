@@ -1,74 +1,84 @@
 <template>
     <div
-        class="row q-pt-md"
         style="
+            background-color: black;
             background-image: linear-gradient(
                     rgba(0, 0, 0, 0.85),
                     rgba(0, 0, 0, 0.85)
                 ),
                 url('collaboration_background.png');
-            background-repeat: no-repeat;
+            background-repeat: repeat;
             background-size: cover;
             height: 100vh;
         "
     >
-        <div class="col-md-8 col-xs-12" style="text-align: center">
-            <div style="text-align: left" class="q-ma-md">
+        <div class="row">
+            <div class="col q-ma-md">
                 <q-btn @click="goBack()" class="text-white" color="primary"
                     >Volver</q-btn
                 >
             </div>
-            <DefaultVideoPlayer
-                v-on:current-time-change="handleCurrentTimeChange"
-                :url="videoUrl"
-                v-on:create-alternative-question="
-                    handleAlternativeQuestionFormActivation
-                "
-                v-on:create-t-o-f-question="handleTOFQuestionFormActivation"
-                v-on:create-essay-question="handleEssayQuestionFormActivation"
-            />
         </div>
-        <div class="col-md-4 col-xs-12" style="text-align: center">
-            <q-tabs
-                v-model="tab"
-                inline-label
-                class="bg-primary text-white shadow-2 q-mr-md"
-            >
-                <q-tab name="sideQuestions" label="Preguntas encontradas" />
-                <q-tab name="createdQuestions" label="Preguntas creadas" />
-            </q-tabs>
-            <q-tab-panels
-                v-model="tab"
-                animated
-                class="bg-primary text-white q-mr-md"
-            >
-                <q-tab-panel name="sideQuestions">
-                    <SideQuestions
-                        v-on:question-click="handleQuestionClick"
-                        @answers-sent="
-                            () => {
-                                answerSent = true;
-                            }
+        <div class="row">
+            <div class="col-lg-8 col-xs-12" style="text-align: center">
+                <div class="q-mx-md">
+                    <DefaultVideoPlayer
+                        v-on:current-time-change="handleCurrentTimeChange"
+                        :url="videoUrl"
+                        v-on:create-alternative-question="
+                            handleAlternativeQuestionFormActivation
                         "
-                        :discovered-questions="discoverQuestions"
-                        :questions="questions"
-                        :createdAtLeastOneQuestion="createdOneQuestion"
-                        :key="sideQuestionsComponentKey"
-                        :answer-sent="answerSent"
+                        v-on:create-t-o-f-question="
+                            handleTOFQuestionFormActivation
+                        "
+                        v-on:create-essay-question="
+                            handleEssayQuestionFormActivation
+                        "
                     />
-                </q-tab-panel>
+                </div>
+            </div>
+            <div class="col-lg-4 col-xs-12" style="text-align: center">
+                <q-tabs
+                    v-model="tab"
+                    inline-label
+                    class="text-white shadow-2 q-mx-md bg-light-blue"
+                >
+                    <q-tab name="sideQuestions" label="Preguntas encontradas" />
+                    <q-tab name="createdQuestions" label="Preguntas creadas" />
+                </q-tabs>
+                <q-tab-panels
+                    v-model="tab"
+                    animated
+                    class="bg-light-blue text-white q-mx-md"
+                >
+                    <q-tab-panel name="sideQuestions">
+                        <SideQuestions
+                            v-on:question-click="handleQuestionClick"
+                            @answers-sent="
+                                () => {
+                                    answerSent = true;
+                                }
+                            "
+                            :discovered-questions="discoverQuestions"
+                            :questions="questions"
+                            :createdAtLeastOneQuestion="createdOneQuestion"
+                            :key="sideQuestionsComponentKey"
+                            :answer-sent="answerSent"
+                        />
+                    </q-tab-panel>
 
-                <q-tab-panel name="createdQuestions">
-                    <CreatedQuestions
-                        :key="createdQuestionsComponentKey"
-                        @updated-question="updatedQuestionEvent()"
-                        @deleted-question="deleteQuestionEvent()"
-                        @created-questions-number="
-                            createdQuestionNumberEvent($event)
-                        "
-                    />
-                </q-tab-panel>
-            </q-tab-panels>
+                    <q-tab-panel name="createdQuestions">
+                        <CreatedQuestions
+                            :key="createdQuestionsComponentKey"
+                            @updated-question="updatedQuestionEvent()"
+                            @deleted-question="deleteQuestionEvent()"
+                            @created-questions-number="
+                                createdQuestionNumberEvent($event)
+                            "
+                        />
+                    </q-tab-panel>
+                </q-tab-panels>
+            </div>
         </div>
     </div>
     <div>
@@ -131,7 +141,7 @@ import { useRouter } from 'vue-router';
 const $q = useQuasar();
 const store = userStore();
 const router = useRouter();
-const tab = ref('createdQuestions');
+const tab = ref('sideQuestions');
 const answerSent = ref(false);
 
 const goBack = () => {
