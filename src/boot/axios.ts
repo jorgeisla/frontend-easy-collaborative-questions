@@ -1,7 +1,9 @@
 import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
 import { userStore } from 'src/stores/user-store';
-
+import { Notify } from 'quasar';
+import { useRouter } from 'vue-router';
+import { validateToken } from 'src/endpoints/user';
 const store = userStore();
 
 declare module '@vue/runtime-core' {
@@ -17,15 +19,27 @@ declare module '@vue/runtime-core' {
 // "export default () => {}" function below (which runs individually
 // for each client)
 const api = axios.create({ baseURL: 'https://api.example.com' });
-api.interceptors.request.use((config) => {
+api.interceptors.request.use(async (config) => {
     const token = store.getToken;
     if (token) {
         config.headers.Authorization = `Token ${token}`;
+        try {
+            const headers = { Authorization: 'Token ' + token };
+            await axios.get(validateToken(), { headers });
+            return config;
+        } catch (error) {
+            store.clearAll();
+            Notify.create({
+                message: 'Session expired. Please login again.',
+                color: 'negative',
+                position: 'top',
+            });
+        }
     }
     return config;
 });
 
-export default boot(({ app }) => {
+export default boot(({ app, router }) => {
     // for use inside Vue files (Options API) through this.$axios and this.$api
 
     app.config.globalProperties.$axios = axios;

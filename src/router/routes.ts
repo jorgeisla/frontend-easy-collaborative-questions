@@ -4,6 +4,7 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/',
         component: () => import('pages/user/LoginPage.vue'),
+        name: 'login',
     },
     {
         path: '/student',
@@ -13,13 +14,13 @@ const routes: RouteRecordRaw[] = [
                 path: 'my-videos',
                 component: () => import('pages/student/MyVideos.vue'),
                 name: 'MyVideos',
-                meta: {},
+                meta: { requiresAuth: true },
             },
             {
                 path: 'watch/:id',
                 component: () => import('pages/video/WatchVideoPage.vue'),
                 name: 'WatchVideo',
-                meta: {},
+                meta: { requiresAuth: true },
                 props: true,
             },
         ],
@@ -32,7 +33,7 @@ const routes: RouteRecordRaw[] = [
                 path: 'upload',
                 component: () => import('pages/video/UploadVideoPage.vue'),
                 name: 'UploadVideo',
-                meta: {},
+                meta: { requiresAuth: true },
             },
         ],
     },
