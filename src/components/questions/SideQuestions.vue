@@ -8,7 +8,11 @@
             </q-toolbar>
             <div v-for="(item, index) in discoveredQuestions" :key="index">
                 <q-item
-                    style="text-align: left; background-color: white"
+                    style="
+                        text-align: left;
+                        background-color: white;
+                        color: black;
+                    "
                     clickable
                     v-ripple
                     @click="questionClick(item.time, item.type)"
@@ -73,6 +77,7 @@ const props = defineProps<{
     createdAtLeastOneQuestion: boolean;
     answerSent: boolean;
 }>();
+console.log(props.discoveredQuestions);
 const answers: any = inject('answers');
 
 const confirmAnswersPopUpState = reactive({
