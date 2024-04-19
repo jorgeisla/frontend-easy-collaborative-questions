@@ -380,7 +380,7 @@ onMounted(() => {
 
 <style>
 .video-player-container {
-    width: 95%;
+    width: 100%;
     position: relative;
     display: inline-block;
 }

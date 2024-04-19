@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { useRouter } from 'vue-router';
 
 export const userStore = defineStore('login', {
     state: () => ({
@@ -30,6 +31,11 @@ export const userStore = defineStore('login', {
             this.setToken(token);
             this.setUsername(username);
             this.setEmail(email);
+        },
+        clearAll() {
+            this.setToken('');
+            this.setUsername('');
+            this.setEmail('');
         },
     },
     persist: true,
