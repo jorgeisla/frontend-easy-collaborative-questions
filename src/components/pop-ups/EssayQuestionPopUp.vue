@@ -20,6 +20,7 @@
 
             <q-card-section class="q-pt-none">
                 <q-input
+                    autogrow
                     v-model="selected"
                     size="lg"
                     label="Ingrese una respuesta"

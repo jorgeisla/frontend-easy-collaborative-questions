@@ -7,6 +7,7 @@
             <q-card-section>
                 <q-form @submit="onSubmit" class="q-gutter-md q-ma-md">
                     <q-input
+                        autogrow
                         filled
                         v-model="questionHeader"
                         label="Pregunta"

@@ -8,6 +8,7 @@
                 <q-form @submit="onSubmit" class="q-gutter-md q-ma-md">
                     <q-input
                         filled
+                        autogrow
                         v-model="questionHeader"
                         label="Pregunta"
                         lazy-rules
@@ -19,6 +20,7 @@
                     />
                     <q-input
                         filled
+                        autogrow
                         v-model="alternativeOne"
                         label="Alternativa 1"
                         lazy-rules
@@ -41,6 +43,7 @@
                         ]"
                     />
                     <q-input
+                        autogrow
                         filled
                         v-model="alternativeThree"
                         label="Alternativa 3"
@@ -52,6 +55,7 @@
                         ]"
                     />
                     <q-input
+                        autogrow
                         filled
                         v-model="AlternativeFour"
                         label="Alternativa 4"

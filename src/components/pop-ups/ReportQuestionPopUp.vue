@@ -13,7 +13,7 @@
                     <q-input
                         v-model="text"
                         filled
-                        type="textarea"
+                        autogrow
                         label="Motivo del reporte..."
                     />
                 </q-card-actions>

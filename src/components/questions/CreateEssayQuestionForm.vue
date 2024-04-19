@@ -8,7 +8,7 @@
                 <q-form @submit="onSubmit" class="q-gutter-md q-ma-md">
                     <q-input
                         filled
-                        type="textarea"
+                        autogrow
                         v-model="questionHeader"
                         label="Pregunta"
                         lazy-rules
