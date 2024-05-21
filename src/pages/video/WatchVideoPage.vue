@@ -23,6 +23,7 @@
             <div class="col-lg-8 col-xs-12" style="text-align: center">
                 <div class="q-mx-md">
                     <DefaultVideoPlayer
+                        :id="props.id"
                         v-on:current-time-change="handleCurrentTimeChange"
                         :url="videoUrl"
                         v-on:create-alternative-question="

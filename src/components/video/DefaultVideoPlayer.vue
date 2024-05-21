@@ -129,6 +129,8 @@
 <script setup lang="ts">
 import { ref, onMounted, watchEffect, inject } from 'vue';
 import { formatTime } from 'src/utils';
+import { api } from 'src/boot/axios';
+import { updateCreateVideoUser } from 'src/endpoints/video';
 
 const videoPlayer = ref();
 const videoIsPlayed = ref(false);
@@ -158,6 +160,7 @@ let previous_time = 1;
 
 const props = defineProps<{
     url: string | null;
+    id?: string;
 }>();
 
 const playbackRateOptions = [
@@ -308,9 +311,22 @@ const setMouseMove = () => {
     }
 };
 
-const updateProgress = () => {
+const updateProgress = async () => {
     const time = Math.floor(videoPlayer.value.currentTime);
     currentTime.value = time;
+    console.log(currentTime.value, props.id);
+    if (currentTime.value === duration.value && props.id) {
+        try {
+            const { data, status } = await api.post(
+                updateCreateVideoUser(props.id),
+                {
+                    is_completed: true,
+                }
+            );
+        } catch (error) {
+            console.log(error);
+        }
+    }
     currentTimeStr.value = formatTime(time);
     if (previous_time !== time) {
         emit('current-time-change', getSeconds(currentTime.value));

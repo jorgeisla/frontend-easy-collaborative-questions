@@ -49,14 +49,13 @@ const reportQuestion = async () => {
         };
         const { data, status } = await api.post(createReport(), payload);
 
-        if (status !== 201) {
+        if (status === 201) {
             $q.notify({
                 message: 'Pregunta reportada.',
                 color: 'green',
                 position: 'top',
             });
         }
-        return false;
     } catch (error) {
         $q.notify({
             message: 'Error al reportar la pregunta.',
