@@ -77,7 +77,6 @@ const props = defineProps<{
     createdAtLeastOneQuestion: boolean;
     answerSent: boolean;
 }>();
-console.log(props.discoveredQuestions);
 const answers: any = inject('answers');
 
 const confirmAnswersPopUpState = reactive({

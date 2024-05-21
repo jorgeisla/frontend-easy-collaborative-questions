@@ -56,25 +56,8 @@
                             icon="fa-regular fa-circle-question"
                             style="font-size: 100%"
                             label="Preguntar"
+                            @click="questionMenuOpen = true"
                         >
-                            <q-menu
-                                @mousemove="toggleVideoControlsOnForTwoSeconds"
-                                transition-show="jump-up"
-                                transition-hide="jump-down"
-                                v-model="questionMenuOpen"
-                                fit
-                            >
-                                <q-btn-toggle
-                                    v-model="createQuestionSelectedOption"
-                                    push
-                                    glossy
-                                    toggle-color="primary"
-                                    :options="questionOptions"
-                                    :stack="true"
-                                    @click="handleQuestionCreation()"
-                                    :class="{ hidden: !showControls }"
-                                />
-                            </q-menu>
                         </q-btn>
                     </div>
                     <div style="padding-right: 10%">
@@ -119,6 +102,29 @@
             </div>
         </div>
     </div>
+    <q-dialog v-model="questionMenuOpen">
+        <q-card>
+            <q-card-section>
+                <div class="text-h4">Crear pregunta</div>
+                <q-select
+                    class="q-mt-md"
+                    v-model="createQuestionSelectedOption"
+                    :options="questionOptions"
+                    label="Tipo de pregunta"
+                    emit-value
+                    map-options
+                    @update:model-value="handleQuestionCreation()"
+                />
+            </q-card-section>
+            <q-card-actions align="right">
+                <q-btn
+                    color="primary"
+                    label="Cancelar"
+                    @click="questionMenuOpen = false"
+                />
+            </q-card-actions>
+        </q-card>
+    </q-dialog>
 </template>
 <script setup lang="ts">
 import { ref, onMounted, watchEffect, inject } from 'vue';
@@ -353,13 +359,15 @@ const handleEssayQuestionCreation = () => {
 };
 
 const handleQuestionCreation = () => {
+    questionMenuOpen.value = false;
     if (createQuestionSelectedOption.value === 'AQ') {
-        return handleAlternativeQuestionCreation();
+        handleAlternativeQuestionCreation();
     } else if (createQuestionSelectedOption.value === 'TOFQ') {
-        return handleTORQuestionCreation();
+        handleTORQuestionCreation();
     } else if (createQuestionSelectedOption.value === 'EQ') {
-        return handleEssayQuestionCreation();
+        handleEssayQuestionCreation();
     }
+    createQuestionSelectedOption.value = null;
 };
 
 onMounted(() => {
