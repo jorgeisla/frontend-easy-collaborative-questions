@@ -1,7 +1,7 @@
 <template>
     <div
         class="video-player-container"
-        @mouseenter="showControls = true"
+        @mouseenter="mouseEnterVideoPlayer"
         @mousemove="toggleVideoControlsOnForTwoSeconds"
         @mouseleave="toggleVideoControlsOffInstantly"
         @fullscreenchange="handleChangeFullScreen"
@@ -56,25 +56,8 @@
                             icon="fa-regular fa-circle-question"
                             style="font-size: 100%"
                             label="Preguntar"
+                            @click="questionMenuOpen = true"
                         >
-                            <q-menu
-                                @mousemove="toggleVideoControlsOnForTwoSeconds"
-                                transition-show="jump-up"
-                                transition-hide="jump-down"
-                                v-model="questionMenuOpen"
-                                fit
-                            >
-                                <q-btn-toggle
-                                    v-model="createQuestionSelectedOption"
-                                    push
-                                    glossy
-                                    toggle-color="primary"
-                                    :options="questionOptions"
-                                    :stack="true"
-                                    @click="handleQuestionCreation()"
-                                    :class="{ hidden: !showControls }"
-                                />
-                            </q-menu>
                         </q-btn>
                     </div>
                     <div style="padding-right: 10%">
@@ -119,10 +102,35 @@
             </div>
         </div>
     </div>
+    <q-dialog v-model="questionMenuOpen">
+        <q-card>
+            <q-card-section>
+                <div class="text-h4">Crear pregunta</div>
+                <q-select
+                    class="q-mt-md"
+                    v-model="createQuestionSelectedOption"
+                    :options="questionOptions"
+                    label="Tipo de pregunta"
+                    emit-value
+                    map-options
+                    @update:model-value="handleQuestionCreation()"
+                />
+            </q-card-section>
+            <q-card-actions align="right">
+                <q-btn
+                    color="primary"
+                    label="Cancelar"
+                    @click="questionMenuOpen = false"
+                />
+            </q-card-actions>
+        </q-card>
+    </q-dialog>
 </template>
 <script setup lang="ts">
 import { ref, onMounted, watchEffect, inject } from 'vue';
 import { formatTime } from 'src/utils';
+import { api } from 'src/boot/axios';
+import { updateCreateVideoUser } from 'src/endpoints/video';
 
 const videoPlayer = ref();
 const videoIsPlayed = ref(false);
@@ -152,6 +160,7 @@ let previous_time = 1;
 
 const props = defineProps<{
     url: string | null;
+    id?: string;
 }>();
 
 const playbackRateOptions = [
@@ -240,16 +249,39 @@ const toggleVideoControlsOff = () => {
     }
 };
 
+let mousePointerTimeoutId: any;
+
+const mouseEnterVideoPlayer = () => {
+    showControls.value = true;
+    mousePointerTimeoutId = setTimeout(function () {
+        if (videoPlayerContainer.value) {
+            videoPlayerContainer.value.style.cursor = 'none'; // Hide the mouse pointer
+        }
+    }, 2000); // 2000 milliseconds (2 seconds)
+};
+
 const toggleVideoControlsOffInstantly = () => {
     if (videoIsPlayed.value) {
         showControls.value = false;
+    }
+    if (videoPlayerContainer.value) {
+        // Clear the timeout and restore the cursor style when the mouse leaves the div
+        clearTimeout(mousePointerTimeoutId);
+        videoPlayerContainer.value.style.cursor = 'pointer'; // Change to your desired default cursor style
     }
 };
 
 const toggleVideoControlsOnForTwoSeconds = () => {
     setMouseMove();
     clearAllTimeOuts();
+    clearTimeout(mousePointerTimeoutId);
+    videoPlayerContainer.value.style.cursor = 'pointer'; // Change to your desired default cursor style
     mouseMoving.value = true;
+    mousePointerTimeoutId = setTimeout(function () {
+        if (videoPlayerContainer.value) {
+            videoPlayerContainer.value.style.cursor = 'none'; // Hide the mouse pointer
+        }
+    }, 2000); // 2000 milliseconds (2 seconds)
     if (!toggleInProgress.value) {
         toggleInProgress.value = true;
         showControls.value = true;
@@ -279,9 +311,22 @@ const setMouseMove = () => {
     }
 };
 
-const updateProgress = () => {
+const updateProgress = async () => {
     const time = Math.floor(videoPlayer.value.currentTime);
     currentTime.value = time;
+    console.log(currentTime.value, props.id);
+    if (currentTime.value === duration.value && props.id) {
+        try {
+            const { data, status } = await api.post(
+                updateCreateVideoUser(props.id),
+                {
+                    is_completed: true,
+                }
+            );
+        } catch (error) {
+            console.log(error);
+        }
+    }
     currentTimeStr.value = formatTime(time);
     if (previous_time !== time) {
         emit('current-time-change', getSeconds(currentTime.value));
@@ -330,13 +375,15 @@ const handleEssayQuestionCreation = () => {
 };
 
 const handleQuestionCreation = () => {
+    questionMenuOpen.value = false;
     if (createQuestionSelectedOption.value === 'AQ') {
-        return handleAlternativeQuestionCreation();
+        handleAlternativeQuestionCreation();
     } else if (createQuestionSelectedOption.value === 'TOFQ') {
-        return handleTORQuestionCreation();
+        handleTORQuestionCreation();
     } else if (createQuestionSelectedOption.value === 'EQ') {
-        return handleEssayQuestionCreation();
+        handleEssayQuestionCreation();
     }
+    createQuestionSelectedOption.value = null;
 };
 
 onMounted(() => {
@@ -357,7 +404,7 @@ onMounted(() => {
 
 <style>
 .video-player-container {
-    width: 95%;
+    width: 100%;
     position: relative;
     display: inline-block;
 }
@@ -369,7 +416,7 @@ onMounted(() => {
 
 /* Video player control bar */
 .video-controls {
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.3);
     color: #fff;
     display: flex;
     flex-direction: column;

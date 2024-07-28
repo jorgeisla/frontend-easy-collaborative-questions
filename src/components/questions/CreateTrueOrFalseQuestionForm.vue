@@ -8,6 +8,7 @@
                 <q-form @submit="onSubmit" class="q-gutter-md q-ma-md">
                     <q-input
                         filled
+                        autogrow
                         v-model="questionHeader"
                         label="Pregunta"
                         lazy-rules
@@ -96,6 +97,8 @@ const props = defineProps<{
     videoTime: number;
 }>();
 const route = useRoute();
+const emit = defineEmits<{ (e: 'created-question'): boolean }>();
+
 
 const videoIdFromUrl: number = parseInt(
     Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
@@ -137,6 +140,7 @@ const onSubmit = async () => {
                 position: 'top',
             });
             toggleDialogOff();
+            emit('created-question');
         } else {
             $q.notify({
                 message: 'Error al crear pregunta.',

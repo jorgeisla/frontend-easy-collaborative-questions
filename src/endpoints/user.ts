@@ -4,4 +4,8 @@ const userLogin = () => {
     return `${api}/login/`;
 };
 
-export { userLogin };
+const validateToken = () => {
+    return `${api}/user/validate-token/`;
+};
+
+export { userLogin, validateToken };

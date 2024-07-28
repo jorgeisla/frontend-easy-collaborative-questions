@@ -12,4 +12,13 @@ const crudVideoApi = () => {
     return `${api}/video/`;
 };
 
-export { createUploadLink, crudVideoApi, retrieveDownloadLink };
+const updateCreateVideoUser = (id: string) => {
+    return `${api}/video/${id}/update-create-video-user`;
+};
+
+export {
+    createUploadLink,
+    crudVideoApi,
+    retrieveDownloadLink,
+    updateCreateVideoUser,
+};

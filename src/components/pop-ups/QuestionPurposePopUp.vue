@@ -19,6 +19,7 @@
                     flat
                     label="No volver a mostrar"
                     color="primary"
+                    @click="dontShowAgain"
                     v-close-popup
                 />
                 <q-btn flat label="Cerrar" color="primary" v-close-popup />
@@ -27,9 +28,16 @@
     </q-dialog>
 </template>
 <script lang="ts" setup>
-import { defineEmits, inject } from 'vue';
+import { inject } from 'vue';
+import { userStore } from 'src/stores/user-store';
 
 const popUpState: { popUp: boolean } = inject('proposalPopUp') as {
     popUp: boolean;
+};
+
+const dontShowAgain = () => {
+    const store = userStore();
+    store.setReminderPopUp(false);
+    popUpState.popUp = false;
 };
 </script>

@@ -1,30 +1,87 @@
 <template>
-    <div class="row q-pt-xl">
-        <div class="col-md-8 col-xs-12" style="text-align: center">
-            <DefaultVideoPlayer
-                v-on:current-time-change="handleCurrentTimeChange"
-                :url="videoUrl"
-                v-on:create-alternative-question="
-                    handleAlternativeQuestionFormActivation
-                "
-                v-on:create-t-o-f-question="handleTOFQuestionFormActivation"
-                v-on:create-essay-question="handleEssayQuestionFormActivation"
-            />
+    <div
+        style="
+            background-color: black;
+            background-image: linear-gradient(
+                    rgba(0, 0, 0, 0.85),
+                    rgba(0, 0, 0, 0.85)
+                ),
+                url('collaboration_background.png');
+            background-repeat: repeat;
+            background-size: cover;
+            height: 100vh;
+        "
+    >
+        <div class="row">
+            <div class="col q-ma-md">
+                <q-btn @click="goBack()" class="text-white" color="primary"
+                    >Volver</q-btn
+                >
+            </div>
         </div>
-        <div class="col-md-4 col-xs-12" style="text-align: center">
-            <SideQuestions
-                v-on:question-click="handleQuestionClick"
-                :discovered-questions="discoverQuestions"
-                :questions="questions"
-                :key="sideQuestionsComponentKey"
-            />
+        <div class="row">
+            <div class="col-lg-8 col-xs-12" style="text-align: center">
+                <div class="q-mx-md">
+                    <DefaultVideoPlayer
+                        :id="props.id"
+                        v-on:current-time-change="handleCurrentTimeChange"
+                        :url="videoUrl"
+                        v-on:create-alternative-question="
+                            handleAlternativeQuestionFormActivation
+                        "
+                        v-on:create-t-o-f-question="
+                            handleTOFQuestionFormActivation
+                        "
+                        v-on:create-essay-question="
+                            handleEssayQuestionFormActivation
+                        "
+                    />
+                </div>
+            </div>
+            <div class="col-lg-4 col-xs-12" style="text-align: center">
+                <q-tabs
+                    v-model="tab"
+                    inline-label
+                    class="text-white shadow-2 q-mx-md bg-light-blue"
+                >
+                    <q-tab name="sideQuestions" label="Preguntas encontradas" />
+                    <q-tab name="createdQuestions" label="Preguntas creadas" />
+                </q-tabs>
+                <q-tab-panels
+                    v-model="tab"
+                    animated
+                    class="bg-light-blue text-white q-mx-md"
+                >
+                    <q-tab-panel name="sideQuestions">
+                        <SideQuestions
+                            v-on:question-click="handleQuestionClick"
+                            @answers-sent="
+                                () => {
+                                    answerSent = true;
+                                }
+                            "
+                            :discovered-questions="discoverQuestions"
+                            :questions="questions"
+                            :createdAtLeastOneQuestion="createdOneQuestion"
+                            :key="sideQuestionsComponentKey"
+                            :answer-sent="answerSent"
+                        />
+                    </q-tab-panel>
+
+                    <q-tab-panel name="createdQuestions">
+                        <CreatedQuestions
+                            :key="createdQuestionsComponentKey"
+                            @updated-question="updatedQuestionEvent()"
+                            @deleted-question="deleteQuestionEvent()"
+                            @created-questions-number="
+                                createdQuestionNumberEvent($event)
+                            "
+                        />
+                    </q-tab-panel>
+                </q-tab-panels>
+            </div>
         </div>
     </div>
-    <!-- <div class="row q-pt-xl">
-        <div class="col-md-12 col-xs-12" style="text-align: center">
-            <AnswersChecker :questions="questions" />
-        </div>
-    </div> -->
     <div>
         <QuestionPopUp :question="question" :key="popUpComponentKey" />
     </div>
@@ -43,19 +100,22 @@
     <div>
         <CreateAlternativeQuestionForm
             :videoTime="videoTime"
+            @created-question="createdQuestionEvent"
         ></CreateAlternativeQuestionForm>
     </div>
     <div>
-        <CreateTrueorFalseQuestionForm
+        <CreateTrueOrFalseQuestionForm
             :videoTime="videoTime"
-        ></CreateTrueorFalseQuestionForm>
+            @created-question="createdQuestionEvent"
+        ></CreateTrueOrFalseQuestionForm>
     </div>
     <div>
         <CreateEssayQuestionForm
             :videoTime="videoTime"
+            @created-question="createdQuestionEvent"
         ></CreateEssayQuestionForm>
     </div>
-    <div>
+    <div v-if="store.getReminderPopUp">
         <QuestionPurposePopUp></QuestionPurposePopUp>
     </div>
 </template>
@@ -65,12 +125,11 @@ import QuestionPopUp from 'src/components/pop-ups/QuestionPopUp.vue';
 import EssayQuestionPopUp from 'src/components/pop-ups/EssayQuestionPopUp.vue';
 import SideQuestions from 'src/components/questions/SideQuestions.vue';
 import TOFQuestionPopUp from 'src/components/pop-ups/TOFQuestionPopUp.vue';
-// import AnswersChecker from 'src/components/answers/AnswersChecker.vue';
 import CreateAlternativeQuestionForm from 'src/components/questions/CreateAlternativeQuestionForm.vue';
-import CreateTrueorFalseQuestionForm from 'src/components/questions/CreateTrueorFalseQuestionForm.vue';
-import { reactive, provide, ref, Ref } from 'vue';
+import CreateTrueOrFalseQuestionForm from 'src/components/questions/CreateTrueOrFalseQuestionForm.vue';
+import CreatedQuestions from 'src/components/questions/CreatedQuestions.vue';
+import { reactive, provide, ref, Ref, onBeforeUnmount } from 'vue';
 import { Question } from 'src/models/video/pop-up';
-import axios from 'axios';
 import { retrieveDownloadLink } from 'src/endpoints/video';
 import { useQuasar } from 'quasar';
 import { cloudfront } from 'src/utils/env-var';
@@ -78,10 +137,19 @@ import CreateEssayQuestionForm from 'src/components/questions/CreateEssayQuestio
 import { listQuestionsFromVideo } from 'src/endpoints/questions';
 import QuestionPurposePopUp from 'src/components/pop-ups/QuestionPurposePopUp.vue';
 import { api } from 'src/boot/axios';
-
+import { userStore } from 'src/stores/user-store';
+import { useRouter } from 'vue-router';
 const $q = useQuasar();
+const store = userStore();
+const router = useRouter();
+const tab = ref('sideQuestions');
+const answerSent = ref(false);
 
+const goBack = () => {
+    router.go(-1);
+};
 const videoUrl = ref();
+const createdOneQuestion = ref<boolean>(false);
 const state = reactive({
     essayPopUp: false,
     tofPopUp: false,
@@ -102,6 +170,7 @@ const props = defineProps<{
 const answers = reactive({});
 
 const sideQuestionsComponentKey = ref(0);
+const createdQuestionsComponentKey = ref(0);
 const popUpComponentKey = ref(0);
 const timeAsKeyDictionary = ref<{ [key: number]: Question }>({});
 const questionTimes = ref<number[]>([]);
@@ -112,6 +181,24 @@ provide('createAlternativeQuestionState', createAlternativeQuestionState);
 provide('createTOFQuestionState', createTOFQuestionState);
 provide('createEssayQuestionState', createEssayQuestionState);
 provide('proposalPopUp', proposalPopUpState);
+
+// Start the timer when the component is mounted
+const timerInterval = setInterval(() => {
+    if (!createdOneQuestion.value) {
+        $q.notify({
+            message:
+                'Recuerda que debes realizar al menos una pregunta en este video.',
+            color: 'accent',
+            position: 'top',
+            timeout: 5000,
+        });
+    }
+}, 180000); // 180 seconds (180,000 milliseconds)
+
+// Clear the timer when the component is destroyed to prevent memory leaks
+onBeforeUnmount(() => {
+    clearInterval(timerInterval);
+});
 
 const togglePopUpOn = () => {
     popUpComponentKey.value += 1;
@@ -280,6 +367,54 @@ const listQuestions = async () => {
         });
     }
 };
+
+setTimeout(() => {
+    $q.notify({
+        message:
+            'Recuerda que debes realizar al menos una pregunta en este video.',
+        color: 'accent',
+        position: 'top',
+        timeout: 5000,
+    });
+}, 10000); // 10 seconds (10,000 milliseconds)
+
+const createdQuestionsCounter = ref(0);
+
+const createdQuestionEvent = () => {
+    createdQuestionsComponentKey.value += 1;
+    createdOneQuestion.value = true;
+    createdQuestionsCounter.value += 1;
+};
+
+const updatedQuestionEvent = () => {
+    createdQuestionsComponentKey.value += 1;
+};
+
+const deleteQuestionEvent = () => {
+    createdQuestionsComponentKey.value += 1;
+    createdQuestionsCounter.value -= 1;
+    if (createdQuestionsCounter.value === 0) {
+        createdOneQuestion.value = false;
+    }
+};
+
+const createdQuestionNumberEvent = (createdQuestionNumberFromEvent: number) => {
+    createdQuestionsCounter.value = createdQuestionNumberFromEvent;
+    createdOneQuestion.value = true;
+};
+import { onBeforeRouteLeave } from 'vue-router';
+
+onBeforeRouteLeave((to, from, next) => {
+    if (!answerSent.value) {
+        next(
+            confirm(
+                'Estas seguro que quieres salir? Las respuestas no han sido enviadas.'
+            )
+        );
+    } else {
+        next();
+    }
+});
 
 await Promise.allSettled([listQuestions(), retrieveVideoLink()]);
 </script>

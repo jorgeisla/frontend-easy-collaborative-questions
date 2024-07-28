@@ -1,5 +1,5 @@
 <template>
-    <q-dialog v-model="createAlternativeQuestionState.popUp">
+    <q-dialog v-model="state.alternativePopUp">
         <q-card style="text-align: left; max-width: 1080px">
             <q-card-section>
                 <div class="text-h4 q-pa-md">Escribe tu pregunta</div>
@@ -33,7 +33,6 @@
 
                     <q-input
                         filled
-                        autogrow
                         v-model="alternativeTwo"
                         label="Alternativa 2"
                         lazy-rules
@@ -44,8 +43,8 @@
                         ]"
                     />
                     <q-input
-                        filled
                         autogrow
+                        filled
                         v-model="alternativeThree"
                         label="Alternativa 3"
                         lazy-rules
@@ -56,8 +55,8 @@
                         ]"
                     />
                     <q-input
-                        filled
                         autogrow
+                        filled
                         v-model="AlternativeFour"
                         label="Alternativa 4"
                         lazy-rules
@@ -157,36 +156,45 @@
     </q-dialog>
 </template>
 <script setup lang="ts">
-import { inject, ref, watch } from 'vue';
+import { inject, ref } from 'vue';
 import { api } from 'src/boot/axios';
 import { useQuasar } from 'quasar';
-import { createQuestion } from 'src/endpoints/questions';
-import { useRoute } from 'vue-router';
+import { CreatedQuestion } from 'src/models/video/pop-up';
+import { editQuestion } from 'src/endpoints/questions';
 
 const $q = useQuasar();
 const props = defineProps<{
-    videoTime: number;
+    question: CreatedQuestion;
 }>();
-const emit = defineEmits<{ (e: 'created-question'): boolean }>();
+const emit = defineEmits<{ (e: 'updated-question'): boolean }>();
 
-const questionHeader = ref('');
-const alternativeOne = ref('');
-const alternativeTwo = ref('');
-const alternativeThree = ref('');
-const AlternativeFour = ref('');
-const minute = ref<number>(0);
-const second = ref<number>(0);
-const correctAlternative = ref();
-const route = useRoute();
-const videoIdFromUrl: number = parseInt(
-    Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
-);
-const createAlternativeQuestionState: any = inject(
-    'createAlternativeQuestionState'
-);
+const questionHeader = ref(props.question.questionHeader);
+const alternativeOne = ref(props.question.answerOptions[0].label);
+const alternativeTwo = ref(props.question.answerOptions[1].label);
+const alternativeThree = ref(props.question.answerOptions[2].label);
+const AlternativeFour = ref(props.question.answerOptions[3].label);
+const minute = ref<number>(Math.floor(props.question.time / 60));
+const second = ref<number>(props.question.time % 60);
+const correctAlternative = ref(props.question.correctAnswer);
+
+const determineCorrectAlternative = () => {
+    if (alternativeOne.value === props.question.correctAnswer) {
+        correctAlternative.value = '0';
+    } else if (alternativeTwo.value === props.question.correctAnswer) {
+        correctAlternative.value = '1';
+    } else if (alternativeThree.value === props.question.correctAnswer) {
+        correctAlternative.value = '2';
+    } else if (AlternativeFour.value === props.question.correctAnswer) {
+        correctAlternative.value = '3';
+    }
+};
+determineCorrectAlternative();
+
+const state: any = inject('state');
+const endpoint = editQuestion(props.question.id);
 
 const toggleDialogOff = () => {
-    createAlternativeQuestionState.popUp = false;
+    state.alternativePopUp = false;
 };
 
 const onSubmit = async () => {
@@ -204,7 +212,7 @@ const onSubmit = async () => {
         ];
         let index = 0;
         for (const alternative of alternatives) {
-            if (index === parseInt(correctAlternative.value)) {
+            if (index === parseInt(correctAlternative.value as string)) {
                 alternative_question.alternative_question_option.push({
                     sentence: alternative,
                     correct_answer: true,
@@ -221,23 +229,21 @@ const onSubmit = async () => {
             alternative_question: alternative_question,
             header: questionHeader.value,
             appearance_time: appearanceTime,
-            question_type: 'AQ',
-            video: videoIdFromUrl,
         };
 
-        const { data, status } = await api.post(createQuestion(), payload);
+        const { data, status } = await api.patch(endpoint, payload);
 
-        if (status === 201) {
+        if (status === 200) {
             $q.notify({
-                message: 'Pregunta creada con éxito.',
+                message: 'Pregunta editada con éxito.',
                 color: 'green',
                 position: 'top',
             });
             toggleDialogOff();
-            emit('created-question');
+            emit('updated-question');
         } else {
             $q.notify({
-                message: 'Error al crear pregunta.',
+                message: 'Error al editar pregunta.',
                 color: 'red',
                 position: 'top',
             });
@@ -251,9 +257,4 @@ const onSubmit = async () => {
         console.log(e);
     }
 };
-
-watch(createAlternativeQuestionState, () => {
-    minute.value = Math.floor(props.videoTime / 60);
-    second.value = props.videoTime % 60;
-});
 </script>

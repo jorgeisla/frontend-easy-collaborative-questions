@@ -1,5 +1,5 @@
 <template>
-    <q-dialog v-model="createQuestionState.popUp">
+    <q-dialog v-model="state.essayPopUp">
         <q-card style="text-align: left; max-width: 1080px">
             <q-card-section>
                 <div class="text-h4 q-pa-md">Escribe tu pregunta</div>
@@ -7,8 +7,8 @@
             <q-card-section>
                 <q-form @submit="onSubmit" class="q-gutter-md q-ma-md">
                     <q-input
-                        filled
                         autogrow
+                        filled
                         v-model="questionHeader"
                         label="Pregunta"
                         lazy-rules
@@ -71,57 +71,50 @@
     </q-dialog>
 </template>
 <script setup lang="ts">
-import { useQuasar } from 'quasar';
-import { createQuestion } from 'src/endpoints/questions';
-import { inject, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { inject, ref } from 'vue';
 import { api } from 'src/boot/axios';
-
-const emit = defineEmits<{ (e: 'created-question'): boolean }>();
+import { useQuasar } from 'quasar';
+import { CreatedQuestion } from 'src/models/video/pop-up';
+import { editQuestion } from 'src/endpoints/questions';
 
 const $q = useQuasar();
 const props = defineProps<{
-    videoTime: number;
+    question: CreatedQuestion;
 }>();
-const route = useRoute();
+const emit = defineEmits<{ (e: 'updated-question'): boolean }>();
 
-const videoIdFromUrl: number = parseInt(
-    Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
-);
+const questionHeader = ref(props.question.questionHeader);
+const minute = ref<number>(Math.floor(props.question.time / 60));
+const second = ref<number>(props.question.time % 60);
 
-const questionHeader = ref('');
-const minute = ref<number>(0);
-const second = ref<number>(0);
-
-const createQuestionState: any = inject('createEssayQuestionState');
+const state: any = inject('state');
+const endpoint = editQuestion(props.question.id);
 
 const toggleDialogOff = () => {
-    createQuestionState.popUp = false;
+    state.essayPopUp = false;
 };
 
 const onSubmit = async () => {
     try {
         const appearanceTime = minute.value * 60 + second.value;
         const payload = {
-            video: videoIdFromUrl,
             header: questionHeader.value,
             appearance_time: appearanceTime,
-            question_type: 'EQ',
         };
 
-        const { data, status } = await api.post(createQuestion(), payload);
+        const { data, status } = await api.patch(endpoint, payload);
 
-        if (status === 201) {
+        if (status === 200) {
             $q.notify({
-                message: 'Pregunta creada con éxito.',
+                message: 'Pregunta editada con éxito.',
                 color: 'green',
                 position: 'top',
             });
             toggleDialogOff();
-            emit('created-question');
+            emit('updated-question');
         } else {
             $q.notify({
-                message: 'Error al crear pregunta.',
+                message: 'Error al editar pregunta.',
                 color: 'red',
                 position: 'top',
             });
@@ -135,9 +128,4 @@ const onSubmit = async () => {
         console.log(e);
     }
 };
-
-watch(createQuestionState, () => {
-    minute.value = Math.floor(props.videoTime / 60);
-    second.value = props.videoTime % 60;
-});
 </script>
