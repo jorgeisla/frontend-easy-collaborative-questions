@@ -1,6 +1,7 @@
 # frontend-easy-collaborative-questions
 
 Frontend proyect from my master tesis "Easy Collaborative Questions"
+Contact: jorge.isla@ug.uchile.cl
 
 # Easy Collaborative Questions app (easy-collaborative-questions)
 

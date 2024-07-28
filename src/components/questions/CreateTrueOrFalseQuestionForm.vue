@@ -99,6 +99,7 @@ const props = defineProps<{
 const route = useRoute();
 const emit = defineEmits<{ (e: 'created-question'): boolean }>();
 
+
 const videoIdFromUrl: number = parseInt(
     Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
 );
