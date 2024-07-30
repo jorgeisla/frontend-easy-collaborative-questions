@@ -82,6 +82,9 @@
                                     :stack="true"
                                     @click="handleSelection()"
                                     :class="{ hidden: !showControls }"
+                                    v-on:update:model-value="
+                                        handlePlayBackRateChange()
+                                    "
                                 />
                             </q-menu>
                         </q-btn>
@@ -131,6 +134,7 @@ import { ref, onMounted, watchEffect, inject } from 'vue';
 import { formatTime } from 'src/utils';
 import { api } from 'src/boot/axios';
 import { updateCreateVideoUser } from 'src/endpoints/video';
+import { createVideoAction } from 'src/endpoints/videoActions';
 
 const videoPlayer = ref();
 const videoIsPlayed = ref(false);
@@ -161,6 +165,7 @@ let previous_time = 1;
 const props = defineProps<{
     url: string | null;
     id?: string;
+    videoSessionId?: number;
 }>();
 
 const playbackRateOptions = [
@@ -211,25 +216,58 @@ const handleChangeFullScreen = () => {
     isFullScreen.value = !isFullScreen.value;
 };
 
-const seekVideo = (event: any) => {
+const seekVideo = async (event: any) => {
+    if (Math.abs(currentTime.value - event.target.value) >= 5) {
+        const { data, status } = await api.post(createVideoAction(), {
+            video_session: props.videoSessionId,
+            action_type: 'seek',
+            video_time: currentTime.value,
+            time_delta: event.target.value - currentTime.value,
+            video_speed: playbackRate.value,
+        });
+    }
     videoPlayer.value.currentTime = event.target.value;
 };
 
-const togglePlay = () => {
+const handlePlayBackRateChange = async () => {
+    const { data, status } = await api.post(createVideoAction(), {
+        video_session: props.videoSessionId,
+        action_type: 'speed_change',
+        video_time: currentTime.value,
+        time_delta: 0,
+        video_speed: playbackRate.value,
+    });
+};
+
+const togglePlay = async () => {
     if (!videoIsPlayed.value) {
-        handlePlay();
+        await handlePlay();
     } else if (videoIsPlayed.value) {
-        handlePause();
+        await handlePause();
     }
 };
 
-const handlePlay = () => {
+const handlePlay = async () => {
+    const { data, status } = await api.post(createVideoAction(), {
+        video_session: props.videoSessionId,
+        action_type: 'play',
+        video_time: currentTime.value,
+        time_delta: 0,
+        video_speed: playbackRate.value,
+    });
     videoPlayer.value.play();
     videoIsPlayed.value = true;
     toggleVideoControlsOff();
 };
 
-const handlePause = () => {
+const handlePause = async () => {
+    const { data, status } = await api.post(createVideoAction(), {
+        video_session: props.videoSessionId,
+        action_type: 'pause',
+        video_time: currentTime.value,
+        time_delta: 0,
+        video_speed: playbackRate.value,
+    });
     videoPlayer.value.pause();
     showControls.value = true;
     videoIsPlayed.value = false;
@@ -314,7 +352,6 @@ const setMouseMove = () => {
 const updateProgress = async () => {
     const time = Math.floor(videoPlayer.value.currentTime);
     currentTime.value = time;
-    console.log(currentTime.value, props.id);
     if (currentTime.value === duration.value && props.id) {
         try {
             const { data, status } = await api.post(

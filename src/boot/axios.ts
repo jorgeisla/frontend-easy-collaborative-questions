@@ -2,7 +2,6 @@ import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
 import { userStore } from 'src/stores/user-store';
 import { Notify } from 'quasar';
-import { useRouter } from 'vue-router';
 import { validateToken } from 'src/endpoints/user';
 const store = userStore();
 
@@ -39,6 +38,8 @@ api.interceptors.request.use(async (config) => {
     return config;
 });
 
+const apiWithoutToken = axios.create({ baseURL: 'https://api.example.com' });
+
 export default boot(({ app, router }) => {
     // for use inside Vue files (Options API) through this.$axios and this.$api
 
@@ -51,4 +52,4 @@ export default boot(({ app, router }) => {
     //       so you can easily perform requests against your app's API
 });
 
-export { api };
+export { api, apiWithoutToken };
