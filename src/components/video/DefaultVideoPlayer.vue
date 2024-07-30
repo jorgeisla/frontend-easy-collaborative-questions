@@ -218,7 +218,7 @@ const handleChangeFullScreen = () => {
 
 const seekVideo = async (event: any) => {
     if (Math.abs(currentTime.value - event.target.value) >= 5) {
-        const { data, status } = await api.post(createVideoAction(), {
+        api.post(createVideoAction(), {
             video_session: props.videoSessionId,
             action_type: 'seek',
             video_time: currentTime.value,
@@ -230,7 +230,7 @@ const seekVideo = async (event: any) => {
 };
 
 const handlePlayBackRateChange = async () => {
-    const { data, status } = await api.post(createVideoAction(), {
+    api.post(createVideoAction(), {
         video_session: props.videoSessionId,
         action_type: 'speed_change',
         video_time: currentTime.value,
@@ -239,16 +239,16 @@ const handlePlayBackRateChange = async () => {
     });
 };
 
-const togglePlay = async () => {
+const togglePlay = () => {
     if (!videoIsPlayed.value) {
-        await handlePlay();
+        handlePlay();
     } else if (videoIsPlayed.value) {
-        await handlePause();
+        handlePause();
     }
 };
 
 const handlePlay = async () => {
-    const { data, status } = await api.post(createVideoAction(), {
+    api.post(createVideoAction(), {
         video_session: props.videoSessionId,
         action_type: 'play',
         video_time: currentTime.value,
@@ -261,7 +261,7 @@ const handlePlay = async () => {
 };
 
 const handlePause = async () => {
-    const { data, status } = await api.post(createVideoAction(), {
+    api.post(createVideoAction(), {
         video_session: props.videoSessionId,
         action_type: 'pause',
         video_time: currentTime.value,
@@ -354,12 +354,9 @@ const updateProgress = async () => {
     currentTime.value = time;
     if (currentTime.value === duration.value && props.id) {
         try {
-            const { data, status } = await api.post(
-                updateCreateVideoUser(props.id),
-                {
-                    is_completed: true,
-                }
-            );
+            api.post(updateCreateVideoUser(props.id), {
+                is_completed: true,
+            });
         } catch (error) {
             console.log(error);
         }
