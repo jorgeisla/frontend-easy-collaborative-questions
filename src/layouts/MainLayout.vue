@@ -6,7 +6,7 @@
                     <q-toolbar-title>
                         <q-btn round to="/student/my-videos">
                             <q-avatar>
-                                <img src="/public/logo.png" />
+                                <img src="logo.png" />
                             </q-avatar>
                         </q-btn>
                         Collaborative Questions
