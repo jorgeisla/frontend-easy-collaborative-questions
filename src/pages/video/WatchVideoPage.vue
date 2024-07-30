@@ -24,6 +24,7 @@
                 <div class="q-mx-md">
                     <DefaultVideoPlayer
                         :id="props.id"
+                        :videoSessionId="videoSession || undefined"
                         v-on:current-time-change="handleCurrentTimeChange"
                         :url="videoUrl"
                         v-on:create-alternative-question="
@@ -143,6 +144,7 @@ import QuestionPurposePopUp from 'src/components/pop-ups/QuestionPurposePopUp.vu
 import { api } from 'src/boot/axios';
 import { userStore } from 'src/stores/user-store';
 import { useRouter } from 'vue-router';
+import { createVideoAction } from 'src/endpoints/videoActions';
 
 const $q = useQuasar();
 const store = userStore();

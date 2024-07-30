@@ -6,12 +6,10 @@
                     <q-toolbar-title>
                         <q-btn round to="/student/my-videos">
                             <q-avatar>
-                                <img
-                                    src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg"
-                                />
+                                <img src="/public/logo.png" />
                             </q-avatar>
                         </q-btn>
-                        EasyCollaborativeQuestions
+                        Collaborative Questions
                     </q-toolbar-title>
                 </q-toolbar>
             </q-header>
