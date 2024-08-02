@@ -211,16 +211,23 @@ const toggleFullScreen = () => {
 };
 
 const handleChangeFullScreen = () => {
+    if (isFullScreen.value) {
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+        }
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
     const volverElement = document.getElementById('volver');
     const sideQuestionsElement = document.getElementById('side-questions');
     const layoutElement = document.getElementById('layout-student');
     if (isFullScreen.value) {
-        isFullScreen.value = true;
         if (volverElement) volverElement.style.display = 'none';
         if (sideQuestionsElement) sideQuestionsElement.style.display = 'none';
         if (layoutElement) layoutElement.style.display = 'none';
     } else {
-        isFullScreen.value = false;
         if (volverElement) volverElement.style.display = '';
         if (sideQuestionsElement) sideQuestionsElement.style.display = '';
         if (layoutElement) layoutElement.style.display = '';
@@ -435,7 +442,10 @@ onMounted(() => {
     videoPlayer.value.src = props.url;
     videoPlayer.value.addEventListener('timeupdate', updateProgress);
     videoPlayer.value.addEventListener('loadedmetadata', setDuration);
-    document.addEventListener('fullscreenchange', handleChangeFullScreen);
+    document.addEventListener('fullscreenchange', () => {
+        isFullScreen.value = !!document.fullscreenElement;
+        handleChangeFullScreen();
+    });
     watchEffect(() => {
         videoPlayer.value.volume = volume.value;
     });
