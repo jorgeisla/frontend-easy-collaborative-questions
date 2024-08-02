@@ -1,6 +1,5 @@
 body {
-    max-width: 1820px;
-    margin: 0 auto; /* Center the content horizontally */
+    max-width: 1920px;
     padding: 0;
     min-height: 100vh; /* Ensure the body covers the full viewport height */
     background: linear-gradient(
@@ -8,5 +7,5 @@ body {
             rgba(0, 0, 0, 0.5),
             rgba(0, 0, 0, 0.9)
         ),
-        url('collaboration_background.png') repeat-y center top;
+        url('collaboration_background_2.webp');
 }
