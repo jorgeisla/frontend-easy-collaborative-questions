@@ -1,9 +1,6 @@
 <template>
     <div>
-        <div
-            class="q-mx-md text-h3"
-            style="color: white; font-weight: 700; padding: 1%"
-        >
+        <div class="q-mx-md q-my-md text-h4" style="color: white">
             Mis Clases
         </div>
         <div class="q-ma-md">
@@ -11,26 +8,32 @@
                 v-for="(item, index) in Object.keys(videos || {})"
                 :key="index"
             >
-                <div
-                    class="text-h4"
-                    style="color: white; font-weight: 700; padding: 1%"
-                >
+                <div class="text-h6 q-ma-md" style="color: white">
                     {{ item }}
                 </div>
                 <div class="row">
                     <div
                         v-for="(video, index) in (videos && videos[item]) || []"
                         :key="index"
-                        class="col-3"
+                        class="col-auto q-mx-md"
                         @click="goToVideo(video.id)"
                     >
-                        <q-card class="q-ma-sm hover-div">
-                            <img src="/collaboration_students.png" />
+                        <q-card
+                            class="q-my-md hover-div"
+                            style="width: 300px; height: 220px"
+                        >
+                            <q-img
+                                src="/collaboration_students.png"
+                                :ratio="16 / 9"
+                            />
 
                             <q-card-section>
-                                <div class="text-h6" style="color: black">
+                                <div class="text-body2 ellipsis">
                                     {{ video.name }}
                                 </div>
+                                <q-tooltip>
+                                    {{ video.name }}
+                                </q-tooltip>
                             </q-card-section>
                         </q-card>
                     </div>
