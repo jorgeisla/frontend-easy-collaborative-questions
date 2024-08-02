@@ -83,34 +83,34 @@
             </div>
         </div>
     </div>
-    <div>
+    <div style="z-index: 2147483647">
         <QuestionPopUp :question="question" :key="popUpComponentKey" />
     </div>
-    <div>
+    <div style="z-index: 2147483647">
         <EssayQuestionPopUp
             :question="question"
             :key="popUpComponentKey"
         ></EssayQuestionPopUp>
     </div>
-    <div>
+    <div style="z-index: 2147483647">
         <TOFQuestionPopUp
             :question="question"
             :key="popUpComponentKey"
         ></TOFQuestionPopUp>
     </div>
-    <div>
+    <div style="z-index: 2147483647">
         <CreateAlternativeQuestionForm
             :videoTime="videoTime"
             @created-question="createdQuestionEvent"
         ></CreateAlternativeQuestionForm>
     </div>
-    <div>
+    <div style="z-index: 2147483647">
         <CreateTrueOrFalseQuestionForm
             :videoTime="videoTime"
             @created-question="createdQuestionEvent"
         ></CreateTrueOrFalseQuestionForm>
     </div>
-    <div>
+    <div style="z-index: 2147483647">
         <CreateEssayQuestionForm
             :videoTime="videoTime"
             @created-question="createdQuestionEvent"
@@ -144,7 +144,6 @@ import QuestionPurposePopUp from 'src/components/pop-ups/QuestionPurposePopUp.vu
 import { api } from 'src/boot/axios';
 import { userStore } from 'src/stores/user-store';
 import { useRouter } from 'vue-router';
-import { createVideoAction } from 'src/endpoints/videoActions';
 
 const $q = useQuasar();
 const store = userStore();
