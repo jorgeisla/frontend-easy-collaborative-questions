@@ -1,7 +1,7 @@
 <template>
     <Suspense>
         <q-layout view="hHh LpR fFr">
-            <q-header class="bg-primary text-white">
+            <q-header class="bg-primary text-white" id="layout-student">
                 <q-toolbar>
                     <q-toolbar-title>
                         <q-btn round to="/student/my-videos">

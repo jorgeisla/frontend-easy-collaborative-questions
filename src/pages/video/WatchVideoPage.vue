@@ -12,7 +12,7 @@
             height: 100vh;
         "
     >
-        <div class="row">
+        <div class="row" id="volver">
             <div class="col q-ma-md">
                 <q-btn @click="goBack()" class="text-white" color="primary"
                     >Volver</q-btn
@@ -39,7 +39,11 @@
                     />
                 </div>
             </div>
-            <div class="col-xs-5" style="text-align: center">
+            <div
+                class="col-xs-5"
+                style="text-align: center"
+                id="side-questions"
+            >
                 <q-tabs
                     v-model="tab"
                     inline-label
@@ -224,7 +228,6 @@ function formatDateForDjango(date: Date) {
 document.addEventListener('visibilitychange', function () {
     const actualVideoSessionuserStore = userStore().getActualVideoSession;
     if (document.visibilityState === 'hidden' && actualVideoSessionuserStore) {
-        console.log(videoSession.value);
         const url = closeVideoSessionAPI(actualVideoSessionuserStore);
         const formData = new FormData();
         formData.append('finish_time', formatDateForDjango(new Date()));

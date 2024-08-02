@@ -4,8 +4,8 @@
         @mouseenter="mouseEnterVideoPlayer"
         @mousemove="toggleVideoControlsOnForTwoSeconds"
         @mouseleave="toggleVideoControlsOffInstantly"
-        @fullscreenchange="handleChangeFullScreen"
         ref="videoPlayerContainer"
+        :class="{ 'fullscreen-mode': isFullScreen }"
     >
         <video
             class="video-player"
@@ -206,15 +206,25 @@ const emit = defineEmits<{
 }>();
 
 const toggleFullScreen = () => {
-    if (document.fullscreenElement) {
-        document.exitFullscreen();
-    } else {
-        videoPlayerContainer.value.requestFullscreen();
-    }
+    isFullScreen.value = !isFullScreen.value;
+    handleChangeFullScreen();
 };
 
 const handleChangeFullScreen = () => {
-    isFullScreen.value = !isFullScreen.value;
+    const volverElement = document.getElementById('volver');
+    const sideQuestionsElement = document.getElementById('side-questions');
+    const layoutElement = document.getElementById('layout-student');
+    if (isFullScreen.value) {
+        isFullScreen.value = true;
+        if (volverElement) volverElement.style.display = 'none';
+        if (sideQuestionsElement) sideQuestionsElement.style.display = 'none';
+        if (layoutElement) layoutElement.style.display = 'none';
+    } else {
+        isFullScreen.value = false;
+        if (volverElement) volverElement.style.display = '';
+        if (sideQuestionsElement) sideQuestionsElement.style.display = '';
+        if (layoutElement) layoutElement.style.display = '';
+    }
 };
 
 const seekVideo = async (event: any) => {
@@ -425,6 +435,7 @@ onMounted(() => {
     videoPlayer.value.src = props.url;
     videoPlayer.value.addEventListener('timeupdate', updateProgress);
     videoPlayer.value.addEventListener('loadedmetadata', setDuration);
+    document.addEventListener('fullscreenchange', handleChangeFullScreen);
     watchEffect(() => {
         videoPlayer.value.volume = volume.value;
     });
@@ -444,9 +455,22 @@ onMounted(() => {
     display: inline-block;
 }
 
+.video-player-container.fullscreen-mode {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
 .video-player {
     width: 100%;
     display: block;
+}
+
+.fullscreen-mode .video-player {
+    height: 100%;
+    object-fit: contain;
 }
 
 /* Video player control bar */
