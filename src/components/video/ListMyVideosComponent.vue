@@ -14,6 +14,7 @@
         "
     >
         <div
+            class="q-mx-md"
             style="
                 color: white;
                 font-weight: 700;
@@ -23,21 +24,35 @@
         >
             Mis Clases
         </div>
-        <div class="q-ma-md row">
+        <div class="q-ma-md">
             <div
-                class="col-12 q-ma-sm"
-                style="max-width: 300px"
-                v-for="(item, index) in videos"
+                v-for="(item, index) in Object.keys(videos || {})"
                 :key="index"
             >
-                <div @click="goToVideo(item.id)">
-                    <q-card class="q-ma-sm hover-div">
-                        <img src="/collaboration_students.png" />
+                <div
+                    style="
+                        color: white;
+                        font-weight: 700;
+                        font-size: 1.5em;
+                        padding: 1%;
+                    "
+                >
+                    {{ item }}
+                </div>
+                <div class="row">
+                    <div
+                        v-for="(video, index) in (videos && videos[item]) || []"
+                        :key="index"
+                        class="col-2"
+                    >
+                        <q-card class="q-ma-sm hover-div">
+                            <img src="/collaboration_students.png" />
 
-                        <q-card-section>
-                            <div class="text-h6">{{ item.name }}</div>
-                        </q-card-section>
-                    </q-card>
+                            <q-card-section>
+                                <div class="text-h6">{{ video.name }}</div>
+                            </q-card-section>
+                        </q-card>
+                    </div>
                 </div>
             </div>
         </div>
@@ -52,7 +67,7 @@ import { api } from 'src/boot/axios';
 
 const router = useRouter();
 const $q = useQuasar();
-const videos = ref<Video[]>([]);
+const videos = ref<{ [key: string]: Video[] }>();
 
 const goToVideo = (id: string) => {
     router.push(`/student/watch/${id}`);

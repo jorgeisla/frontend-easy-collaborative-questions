@@ -27,6 +27,14 @@
                         <q-icon name="attach_file" />
                     </template>
                 </q-file>
+                <q-select
+                    class="q-pa-md"
+                    :options="options"
+                    outlined
+                    v-model="selectedOption"
+                    label="Selecciona la semana"
+                >
+                </q-select>
                 <div class="q-pa-md">
                     <q-btn type="submit">Subir video</q-btn>
                     <div class="progress">
@@ -58,6 +66,24 @@ const uploadProgress = ref(0);
 const videoName = ref('');
 const store = userStore();
 const token = store.getToken;
+const options = [
+    'Semana 1',
+    'Semana 2',
+    'Semana 3',
+    'Semana 4',
+    'Semana 5',
+    'Semana 6',
+    'Semana 7',
+    'Semana 8',
+    'Semana 9',
+    'Semana 10',
+    'Semana 11',
+    'Semana 12',
+    'Semana 13',
+    'Semana 14',
+    'Semana 15',
+];
+const selectedOption = ref('');
 
 const updateVideo = () => {
     const videoElement = document.createElement('video');
@@ -102,6 +128,7 @@ const createUploadLinkAction = async () => {
                 file_name: fileName,
                 name: videoName.value,
                 length: duration,
+                week: selectedOption.value,
             };
             const videoCreationResponse = await api.post(
                 crudVideoApi(),
