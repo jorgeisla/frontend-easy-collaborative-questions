@@ -22,7 +22,7 @@
                         v-for="(video, index) in (videos && videos[item]) || []"
                         :key="index"
                         class="col-3"
-                        style="max-width: 350px"
+                        @click="goToVideo(video.id)"
                     >
                         <q-card class="q-ma-sm hover-div">
                             <img src="/collaboration_students.png" />
