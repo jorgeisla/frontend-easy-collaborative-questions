@@ -9,5 +9,4 @@ body {
             rgba(0, 0, 0, 0.9)
         ),
         url('collaboration_background.png') repeat-y center top;
-    color: white; /* Default text color, adjust as needed */
 }
