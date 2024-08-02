@@ -35,7 +35,7 @@ import 'quasar/dist/quasar.sass'
 
 
 
-import 'src/css/app.scss'
+import 'src/css/app.css'
 
 
 import createQuasarApp from './app.js'

@@ -1,26 +1,8 @@
 <template>
-    <div
-        style="
-            background-image: linear-gradient(
-                    rgba(0, 0, 0, 0.7),
-                    rgba(0, 0, 0, 0.7)
-                ),
-                url('collaboration_background.png');
-            background-repeat: no-repeat;
-            background-size: cover;
-            margin: 0%;
-            padding: 0%;
-            height: 100vh;
-        "
-    >
+    <div>
         <div
-            class="q-mx-md"
-            style="
-                color: white;
-                font-weight: 700;
-                font-size: 2.5em;
-                padding: 1%;
-            "
+            class="q-mx-md text-h3"
+            style="color: white; font-weight: 700; padding: 1%"
         >
             Mis Clases
         </div>
@@ -30,12 +12,8 @@
                 :key="index"
             >
                 <div
-                    style="
-                        color: white;
-                        font-weight: 700;
-                        font-size: 1.5em;
-                        padding: 1%;
-                    "
+                    class="text-h4"
+                    style="color: white; font-weight: 700; padding: 1%"
                 >
                     {{ item }}
                 </div>
@@ -43,13 +21,16 @@
                     <div
                         v-for="(video, index) in (videos && videos[item]) || []"
                         :key="index"
-                        class="col-2"
+                        class="col-3"
+                        style="max-width: 350px"
                     >
                         <q-card class="q-ma-sm hover-div">
                             <img src="/collaboration_students.png" />
 
                             <q-card-section>
-                                <div class="text-h6">{{ video.name }}</div>
+                                <div class="text-h6" style="color: black">
+                                    {{ video.name }}
+                                </div>
                             </q-card-section>
                         </q-card>
                     </div>
