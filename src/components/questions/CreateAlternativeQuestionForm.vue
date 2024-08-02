@@ -1,6 +1,8 @@
 <template>
     <q-dialog v-model="createAlternativeQuestionState.popUp">
-        <q-card style="text-align: left; max-width: 1080px">
+        <q-card
+            style="text-align: left; max-width: 1080px; z-index: 2147483647"
+        >
             <q-card-section>
                 <div class="text-h4 q-pa-md">Escribe tu pregunta</div>
             </q-card-section>

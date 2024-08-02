@@ -72,6 +72,7 @@
                                 transition-hide="jump-down"
                                 v-model="menuOpen"
                                 fit
+                                style="z-index: 2147483647"
                             >
                                 <q-btn-toggle
                                     v-model="playbackRate"
@@ -105,7 +106,7 @@
             </div>
         </div>
     </div>
-    <q-dialog v-model="questionMenuOpen">
+    <q-dialog v-model="questionMenuOpen" style="z-index: 2147483647">
         <q-card>
             <q-card-section>
                 <div class="text-h4">Crear pregunta</div>

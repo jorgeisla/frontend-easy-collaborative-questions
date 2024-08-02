@@ -83,34 +83,34 @@
             </div>
         </div>
     </div>
-    <div style="z-index: 2147483647">
+    <div>
         <QuestionPopUp :question="question" :key="popUpComponentKey" />
     </div>
-    <div style="z-index: 2147483647">
+    <div>
         <EssayQuestionPopUp
             :question="question"
             :key="popUpComponentKey"
         ></EssayQuestionPopUp>
     </div>
-    <div style="z-index: 2147483647">
+    <div>
         <TOFQuestionPopUp
             :question="question"
             :key="popUpComponentKey"
         ></TOFQuestionPopUp>
     </div>
-    <div style="z-index: 2147483647">
+    <div>
         <CreateAlternativeQuestionForm
             :videoTime="videoTime"
             @created-question="createdQuestionEvent"
         ></CreateAlternativeQuestionForm>
     </div>
-    <div style="z-index: 2147483647">
+    <div>
         <CreateTrueOrFalseQuestionForm
             :videoTime="videoTime"
             @created-question="createdQuestionEvent"
         ></CreateTrueOrFalseQuestionForm>
     </div>
-    <div style="z-index: 2147483647">
+    <div>
         <CreateEssayQuestionForm
             :videoTime="videoTime"
             @created-question="createdQuestionEvent"
