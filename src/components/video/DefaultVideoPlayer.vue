@@ -4,8 +4,8 @@
         @mouseenter="mouseEnterVideoPlayer"
         @mousemove="toggleVideoControlsOnForTwoSeconds"
         @mouseleave="toggleVideoControlsOffInstantly"
-        @fullscreenchange="handleChangeFullScreen"
         ref="videoPlayerContainer"
+        :class="{ 'fullscreen-mode': isFullScreen }"
     >
         <video
             class="video-player"
@@ -72,6 +72,7 @@
                                 transition-hide="jump-down"
                                 v-model="menuOpen"
                                 fit
+                                style=""
                             >
                                 <q-btn-toggle
                                     v-model="playbackRate"
@@ -82,6 +83,9 @@
                                     :stack="true"
                                     @click="handleSelection()"
                                     :class="{ hidden: !showControls }"
+                                    v-on:update:model-value="
+                                        handlePlayBackRateChange()
+                                    "
                                 />
                             </q-menu>
                         </q-btn>
@@ -102,7 +106,7 @@
             </div>
         </div>
     </div>
-    <q-dialog v-model="questionMenuOpen">
+    <q-dialog v-model="questionMenuOpen" style="">
         <q-card>
             <q-card-section>
                 <div class="text-h4">Crear pregunta</div>
@@ -131,6 +135,7 @@ import { ref, onMounted, watchEffect, inject } from 'vue';
 import { formatTime } from 'src/utils';
 import { api } from 'src/boot/axios';
 import { updateCreateVideoUser } from 'src/endpoints/video';
+import { createVideoAction } from 'src/endpoints/videoActions';
 
 const videoPlayer = ref();
 const videoIsPlayed = ref(false);
@@ -161,6 +166,7 @@ let previous_time = 1;
 const props = defineProps<{
     url: string | null;
     id?: string;
+    videoSessionId?: number;
 }>();
 
 const playbackRateOptions = [
@@ -200,19 +206,55 @@ const emit = defineEmits<{
 }>();
 
 const toggleFullScreen = () => {
-    if (document.fullscreenElement) {
-        document.exitFullscreen();
-    } else {
-        videoPlayerContainer.value.requestFullscreen();
-    }
+    isFullScreen.value = !isFullScreen.value;
+    handleChangeFullScreen();
 };
 
 const handleChangeFullScreen = () => {
-    isFullScreen.value = !isFullScreen.value;
+    if (isFullScreen.value) {
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+        }
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+    const volverElement = document.getElementById('volver');
+    const sideQuestionsElement = document.getElementById('side-questions');
+    const layoutElement = document.getElementById('layout-student');
+    if (isFullScreen.value) {
+        if (volverElement) volverElement.style.display = 'none';
+        if (sideQuestionsElement) sideQuestionsElement.style.display = 'none';
+        if (layoutElement) layoutElement.style.display = 'none';
+    } else {
+        if (volverElement) volverElement.style.display = '';
+        if (sideQuestionsElement) sideQuestionsElement.style.display = '';
+        if (layoutElement) layoutElement.style.display = '';
+    }
 };
 
-const seekVideo = (event: any) => {
+const seekVideo = async (event: any) => {
+    if (Math.abs(currentTime.value - event.target.value) >= 5) {
+        api.post(createVideoAction(), {
+            video_session: props.videoSessionId,
+            action_type: 'seek',
+            video_time: currentTime.value,
+            time_delta: event.target.value - currentTime.value,
+            video_speed: playbackRate.value,
+        });
+    }
     videoPlayer.value.currentTime = event.target.value;
+};
+
+const handlePlayBackRateChange = async () => {
+    api.post(createVideoAction(), {
+        video_session: props.videoSessionId,
+        action_type: 'speed_change',
+        video_time: currentTime.value,
+        time_delta: 0,
+        video_speed: playbackRate.value,
+    });
 };
 
 const togglePlay = () => {
@@ -223,13 +265,27 @@ const togglePlay = () => {
     }
 };
 
-const handlePlay = () => {
+const handlePlay = async () => {
+    api.post(createVideoAction(), {
+        video_session: props.videoSessionId,
+        action_type: 'play',
+        video_time: currentTime.value,
+        time_delta: 0,
+        video_speed: playbackRate.value,
+    });
     videoPlayer.value.play();
     videoIsPlayed.value = true;
     toggleVideoControlsOff();
 };
 
-const handlePause = () => {
+const handlePause = async () => {
+    api.post(createVideoAction(), {
+        video_session: props.videoSessionId,
+        action_type: 'pause',
+        video_time: currentTime.value,
+        time_delta: 0,
+        video_speed: playbackRate.value,
+    });
     videoPlayer.value.pause();
     showControls.value = true;
     videoIsPlayed.value = false;
@@ -314,15 +370,11 @@ const setMouseMove = () => {
 const updateProgress = async () => {
     const time = Math.floor(videoPlayer.value.currentTime);
     currentTime.value = time;
-    console.log(currentTime.value, props.id);
     if (currentTime.value === duration.value && props.id) {
         try {
-            const { data, status } = await api.post(
-                updateCreateVideoUser(props.id),
-                {
-                    is_completed: true,
-                }
-            );
+            api.post(updateCreateVideoUser(props.id), {
+                is_completed: true,
+            });
         } catch (error) {
             console.log(error);
         }
@@ -390,6 +442,10 @@ onMounted(() => {
     videoPlayer.value.src = props.url;
     videoPlayer.value.addEventListener('timeupdate', updateProgress);
     videoPlayer.value.addEventListener('loadedmetadata', setDuration);
+    document.addEventListener('fullscreenchange', () => {
+        isFullScreen.value = !!document.fullscreenElement;
+        handleChangeFullScreen();
+    });
     watchEffect(() => {
         videoPlayer.value.volume = volume.value;
     });
@@ -409,9 +465,22 @@ onMounted(() => {
     display: inline-block;
 }
 
+.video-player-container.fullscreen-mode {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
 .video-player {
     width: 100%;
     display: block;
+}
+
+.fullscreen-mode .video-player {
+    height: 100%;
+    object-fit: contain;
 }
 
 /* Video player control bar */

@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import { useRouter } from 'vue-router';
 
 export const userStore = defineStore('login', {
     state: () => ({
@@ -7,14 +6,19 @@ export const userStore = defineStore('login', {
         token: '',
         email: '',
         reminderPopUp: true,
+        actualVideoSession: 0,
     }),
     getters: {
         getToken: (state) => state.token,
         getUsername: (state) => state.username,
         getEmail: (state) => state.email,
         getReminderPopUp: (state) => state.reminderPopUp,
+        getActualVideoSession: (state) => state.actualVideoSession,
     },
     actions: {
+        setActualVideoSession(actualVideoSession: number) {
+            this.actualVideoSession = actualVideoSession;
+        },
         setToken(token: string) {
             this.token = token;
         },

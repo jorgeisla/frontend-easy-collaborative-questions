@@ -1,43 +1,42 @@
 <template>
-    <div
-        style="
-            background-image: linear-gradient(
-                    rgba(0, 0, 0, 0.7),
-                    rgba(0, 0, 0, 0.7)
-                ),
-                url('collaboration_background.png');
-            background-repeat: no-repeat;
-            background-size: cover;
-            margin: 0%;
-            padding: 0%;
-            height: 100vh;
-        "
-    >
-        <div
-            style="
-                color: white;
-                font-weight: 700;
-                font-size: 2.5em;
-                padding: 1%;
-            "
-        >
+    <div>
+        <div class="q-mx-md q-my-md text-h4" style="color: white">
             Mis Clases
         </div>
-        <div class="q-ma-md row">
+        <div class="q-ma-md">
             <div
-                class="col-12 q-ma-sm"
-                style="max-width: 300px"
-                v-for="(item, index) in videos"
+                v-for="(item, index) in Object.keys(videos || {})"
                 :key="index"
             >
-                <div @click="goToVideo(item.id)">
-                    <q-card class="q-ma-sm hover-div">
-                        <img src="/collaboration_students.png" />
+                <div class="text-h6 q-ma-md" style="color: white">
+                    {{ item }}
+                </div>
+                <div class="row">
+                    <div
+                        v-for="(video, index) in (videos && videos[item]) || []"
+                        :key="index"
+                        class="col-auto q-mx-md"
+                        @click="goToVideo(video.id)"
+                    >
+                        <q-card
+                            class="q-my-md hover-div"
+                            style="width: 300px; height: 220px"
+                        >
+                            <q-img
+                                src="/collaboration_students.png"
+                                :ratio="16 / 9"
+                            />
 
-                        <q-card-section>
-                            <div class="text-h6">{{ item.name }}</div>
-                        </q-card-section>
-                    </q-card>
+                            <q-card-section>
+                                <div class="text-body2 ellipsis">
+                                    {{ video.name }}
+                                </div>
+                                <q-tooltip>
+                                    {{ video.name }}
+                                </q-tooltip>
+                            </q-card-section>
+                        </q-card>
+                    </div>
                 </div>
             </div>
         </div>
@@ -52,7 +51,7 @@ import { api } from 'src/boot/axios';
 
 const router = useRouter();
 const $q = useQuasar();
-const videos = ref<Video[]>([]);
+const videos = ref<{ [key: string]: Video[] }>();
 
 const goToVideo = (id: string) => {
     router.push(`/student/watch/${id}`);

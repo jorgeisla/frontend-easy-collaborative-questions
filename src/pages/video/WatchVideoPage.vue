@@ -12,7 +12,7 @@
             height: 100vh;
         "
     >
-        <div class="row">
+        <div class="row" id="volver">
             <div class="col q-ma-md">
                 <q-btn @click="goBack()" class="text-white" color="primary"
                     >Volver</q-btn
@@ -20,10 +20,11 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-8 col-xs-12" style="text-align: center">
+            <div class="col-xs-7" style="text-align: center">
                 <div class="q-mx-md">
                     <DefaultVideoPlayer
                         :id="props.id"
+                        :videoSessionId="videoSession || undefined"
                         v-on:current-time-change="handleCurrentTimeChange"
                         :url="videoUrl"
                         v-on:create-alternative-question="
@@ -38,7 +39,11 @@
                     />
                 </div>
             </div>
-            <div class="col-lg-4 col-xs-12" style="text-align: center">
+            <div
+                class="col-xs-5"
+                style="text-align: center"
+                id="side-questions"
+            >
                 <q-tabs
                     v-model="tab"
                     inline-label
@@ -131,6 +136,10 @@ import CreatedQuestions from 'src/components/questions/CreatedQuestions.vue';
 import { reactive, provide, ref, Ref, onBeforeUnmount } from 'vue';
 import { Question } from 'src/models/video/pop-up';
 import { retrieveDownloadLink } from 'src/endpoints/video';
+import {
+    videoSessionCRUD,
+    closeVideoSessionAPI,
+} from 'src/endpoints/videoSession';
 import { useQuasar } from 'quasar';
 import { cloudfront } from 'src/utils/env-var';
 import CreateEssayQuestionForm from 'src/components/questions/CreateEssayQuestionForm.vue';
@@ -139,11 +148,13 @@ import QuestionPurposePopUp from 'src/components/pop-ups/QuestionPurposePopUp.vu
 import { api } from 'src/boot/axios';
 import { userStore } from 'src/stores/user-store';
 import { useRouter } from 'vue-router';
+
 const $q = useQuasar();
 const store = userStore();
 const router = useRouter();
 const tab = ref('sideQuestions');
 const answerSent = ref(false);
+const videoSession = ref<number | null>(null);
 
 const goBack = () => {
     router.go(-1);
@@ -196,8 +207,33 @@ const timerInterval = setInterval(() => {
 }, 180000); // 180 seconds (180,000 milliseconds)
 
 // Clear the timer when the component is destroyed to prevent memory leaks
-onBeforeUnmount(() => {
+onBeforeUnmount(async () => {
     clearInterval(timerInterval);
+    await closeVideoSession();
+});
+
+function formatDateForDjango(date: Date) {
+    const pad = (number: number) => (number < 10 ? '0' + number : number);
+
+    const year = date.getUTCFullYear();
+    const month = pad(date.getUTCMonth() + 1);
+    const day = pad(date.getUTCDate());
+    const hours = pad(date.getUTCHours());
+    const minutes = pad(date.getUTCMinutes());
+    const seconds = pad(date.getUTCSeconds());
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}+00:00`;
+}
+
+document.addEventListener('visibilitychange', function () {
+    const actualVideoSessionuserStore = userStore().getActualVideoSession;
+    if (document.visibilityState === 'hidden' && actualVideoSessionuserStore) {
+        const url = closeVideoSessionAPI(actualVideoSessionuserStore);
+        const formData = new FormData();
+        formData.append('finish_time', formatDateForDjango(new Date()));
+
+        navigator.sendBeacon(url, formData);
+    }
 });
 
 const togglePopUpOn = () => {
@@ -300,6 +336,7 @@ const retrieveVideoLink = async () => {
             });
         }
         videoUrl.value = `${cloudfront}/${data.file_name}`;
+        await createVideoSession();
     } catch (e) {
         $q.notify({
             message: 'Error al descargar video',
@@ -368,16 +405,6 @@ const listQuestions = async () => {
     }
 };
 
-setTimeout(() => {
-    $q.notify({
-        message:
-            'Recuerda que debes realizar al menos una pregunta en este video.',
-        color: 'accent',
-        position: 'top',
-        timeout: 5000,
-    });
-}, 10000); // 10 seconds (10,000 milliseconds)
-
 const createdQuestionsCounter = ref(0);
 
 const createdQuestionEvent = () => {
@@ -416,5 +443,46 @@ onBeforeRouteLeave((to, from, next) => {
     }
 });
 
+const createVideoSession = async () => {
+    try {
+        const payload = {
+            video: props.id,
+        };
+        const { data, status } = await api.post(videoSessionCRUD(), payload);
+        if (status !== 201) {
+            $q.notify({
+                message: 'Error en la conexión con el servidor.',
+                color: 'red',
+            });
+            return;
+        } else {
+            videoSession.value = data.id;
+            userStore().setActualVideoSession(data.id);
+        }
+    } catch (e) {}
+};
+
+const closeVideoSession = async () => {
+    try {
+        if (videoSession.value) {
+            const finishTime = new Date();
+            const payload = {
+                finish_time: finishTime,
+            };
+            const { status } = await api.patch(
+                videoSessionCRUD(videoSession.value),
+                payload
+            );
+            if (status !== 200) {
+                $q.notify({
+                    message: 'Error en la conexión con el servidor.',
+                    color: 'red',
+                });
+            }
+        }
+    } catch (e) {
+        console.error('Error closing video session:', e);
+    }
+};
 await Promise.allSettled([listQuestions(), retrieveVideoLink()]);
 </script>
