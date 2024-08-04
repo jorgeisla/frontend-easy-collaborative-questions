@@ -23,6 +23,12 @@ const routes: RouteRecordRaw[] = [
                 meta: { requiresAuth: true },
                 props: true,
             },
+            {
+                path: 'change-password',
+                component: () => import('pages/student/ChangePassword.vue'),
+                name: 'ChangePassword',
+                meta: { requiresAuth: true },
+            },
         ],
     },
     {

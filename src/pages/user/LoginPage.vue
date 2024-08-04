@@ -82,7 +82,9 @@
                 padding-left: 10%;
             "
         >
-            <LoginComponent></LoginComponent>
+            <Suspense>
+                <LoginComponent></LoginComponent>
+            </Suspense>
         </div>
     </div>
 </template>

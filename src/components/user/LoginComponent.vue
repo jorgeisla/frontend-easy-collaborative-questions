@@ -44,11 +44,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useQuasar } from 'quasar';
-import { userLogin } from 'src/endpoints/user';
+import { userLogin, validateToken } from 'src/endpoints/user';
 import { userStore } from 'src/stores/user-store';
 import { UserLoginResponse } from 'src/models/user/user';
 import { useRouter } from 'vue-router';
-import { apiWithoutToken } from 'src/boot/axios';
+import { api, apiWithoutToken } from 'src/boot/axios';
 
 const router = useRouter();
 const username = ref('');
@@ -64,6 +64,15 @@ const passwordRules = [
     (val: string) => (val && val.length > 0) || 'Ingrese su contraseña',
 ];
 
+const tokenLogin = async () => {
+    try {
+        const { data, status } = await api.get(validateToken());
+        if (status === 200) {
+            router.push({ name: 'MyVideos' });
+        }
+    } catch (error) {}
+};
+
 const login = async () => {
     try {
         const { data, status } = await apiWithoutToken.post<UserLoginResponse>(
@@ -74,7 +83,7 @@ const login = async () => {
                     username: username.value,
                     password: password.value,
                 },
-            }
+            },
         );
         if (status !== 200) {
             $q.notify({
@@ -98,4 +107,8 @@ const login = async () => {
         });
     }
 };
+
+if (store.token) {
+    await tokenLogin();
+}
 </script>
