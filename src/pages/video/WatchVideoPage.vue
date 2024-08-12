@@ -75,6 +75,7 @@
 
                     <q-tab-panel name="createdQuestions">
                         <CreatedQuestions
+                            :videoId="props.id"
                             :key="createdQuestionsComponentKey"
                             @updated-question="updatedQuestionEvent()"
                             @deleted-question="deleteQuestionEvent()"
@@ -348,7 +349,7 @@ const retrieveVideoLink = async () => {
 const listQuestions = async () => {
     try {
         const { data, status } = await api.get(
-            listQuestionsFromVideo(props.id)
+            listQuestionsFromVideo(props.id),
         );
         if (status !== 200) {
             $q.notify({
@@ -365,7 +366,7 @@ const listQuestions = async () => {
                                 label: alternativeOption.sentence,
                                 value: alternativeOption.id,
                             };
-                        }
+                        },
                     );
                 return {
                     questionHeader: item.header,
@@ -435,8 +436,8 @@ onBeforeRouteLeave((to, from, next) => {
     if (!answerSent.value) {
         next(
             confirm(
-                'Estas seguro que quieres salir? Las respuestas no han sido enviadas.'
-            )
+                'Estas seguro que quieres salir? Las respuestas no han sido enviadas.',
+            ),
         );
     } else {
         next();
@@ -471,7 +472,7 @@ const closeVideoSession = async () => {
             };
             const { status } = await api.patch(
                 videoSessionCRUD(videoSession.value),
-                payload
+                payload,
             );
             if (status !== 200) {
                 $q.notify({

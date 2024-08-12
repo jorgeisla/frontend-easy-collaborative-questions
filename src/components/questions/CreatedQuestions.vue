@@ -68,8 +68,16 @@ const state = reactive({
     tofPopUp: false,
     alternativePopUp: false,
 });
+const props = defineProps({
+    videoId: {
+        type: String,
+        required: true,
+    },
+});
+
 provide('state', state);
 const createdQuestionItem = ref<CreatedQuestion>();
+const videoId = props.videoId;
 
 const emit = defineEmits([
     'updated-question',
@@ -94,7 +102,7 @@ const activateEditQuestionsPopUp = (item: CreatedQuestion, flag: string) => {
 const listQuestions = async () => {
     try {
         const { data, status } = await api.get(
-            listQuestionsCreatedByUserNoMoreThanCertainTimeAgo()
+            listQuestionsCreatedByUserNoMoreThanCertainTimeAgo(videoId),
         );
         if (status !== 200) {
             $q.notify({
@@ -118,7 +126,7 @@ const listQuestions = async () => {
                                 label: alternativeOption.sentence,
                                 value: alternativeOption.id,
                             };
-                        }
+                        },
                     );
                 return {
                     questionHeader: item.header,
