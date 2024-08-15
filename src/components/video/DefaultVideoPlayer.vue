@@ -6,6 +6,8 @@
         @mouseleave="toggleVideoControlsOffInstantly"
         ref="videoPlayerContainer"
         :class="{ 'fullscreen-mode': isFullScreen }"
+        tabindex="0"
+        @keydown.space.prevent="handleSpaceBar"
     >
         <video
             class="video-player"
@@ -152,7 +154,7 @@ const isFullScreen = ref(false);
 const volume = ref(1);
 const state: any = inject('state');
 const createAlternativeQuestionState: any = inject(
-    'createAlternativeQuestionState'
+    'createAlternativeQuestionState',
 );
 const createTOFQuestionState: any = inject('createTOFQuestionState');
 const createEssayQuestionState: any = inject('createEssayQuestionState');
@@ -436,6 +438,12 @@ const handleQuestionCreation = () => {
         handleEssayQuestionCreation();
     }
     createQuestionSelectedOption.value = null;
+};
+
+const handleSpaceBar = (event: KeyboardEvent) => {
+    if (event.code === 'Space') {
+        togglePlay();
+    }
 };
 
 onMounted(() => {
