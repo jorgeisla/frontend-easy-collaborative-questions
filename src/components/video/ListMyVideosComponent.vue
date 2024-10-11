@@ -5,7 +5,7 @@
         </div>
         <div class="q-ma-md">
             <div
-                v-for="(item, index) in Object.keys(videos || {})"
+                v-for="(item, index) in Object.keys(sortedVideos || {})"
                 :key="index"
             >
                 <div class="text-h6 q-ma-md" style="color: white">
@@ -45,13 +45,25 @@
 <script setup lang="ts">
 import { crudVideoApi } from 'src/endpoints/video';
 import { useQuasar } from 'quasar';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { api } from 'src/boot/axios';
 
 const router = useRouter();
 const $q = useQuasar();
 const videos = ref<{ [key: string]: Video[] }>();
+
+const sortedVideos = computed(() => {
+    if (!videos.value) return {};
+
+    return Object.fromEntries(
+        Object.entries(videos.value).sort((a, b) => {
+            const weekA = parseInt(a[0].split(' ')[1]);
+            const weekB = parseInt(b[0].split(' ')[1]);
+            return weekB - weekA;
+        }),
+    );
+});
 
 const goToVideo = (id: string) => {
     router.push(`/student/watch/${id}`);
@@ -78,7 +90,9 @@ await listAllVideos();
 </script>
 <style>
 .hover-div {
-    transition: background-color 0.3s, filter 0.3s;
+    transition:
+        background-color 0.3s,
+        filter 0.3s;
     cursor: pointer;
 }
 
