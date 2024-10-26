@@ -8,6 +8,12 @@
         :class="{ 'fullscreen-mode': isFullScreen }"
         tabindex="0"
         @keydown.space.prevent="handleSpaceBar"
+        @keydown.left.prevent="handleLeftArrow"
+        @keydown.right.prevent="handleRightArrow"
+        @dblclick="toggleFullScreen"
+        @keydown.capture="handleKeyDown"
+        @keydown.up.prevent="handleVolumeUp"
+        @keydown.down.prevent="handleVolumeDown"
     >
         <video
             class="video-player"
@@ -443,6 +449,48 @@ const handleQuestionCreation = () => {
 const handleSpaceBar = (event: KeyboardEvent) => {
     if (event.code === 'Space') {
         togglePlay();
+    }
+};
+
+const handleRightArrow = (event: KeyboardEvent) => {
+    if (event.code === 'ArrowRight') {
+        videoPlayer.value.currentTime += 5;
+    }
+};
+
+const handleLeftArrow = (event: KeyboardEvent) => {
+    if (event.code === 'ArrowLeft') {
+        videoPlayer.value.currentTime -= 5;
+    }
+};
+const handleKeyDown = (event: KeyboardEvent) => {
+    console.log(event.key, event.key === 'k');
+    if (event.key === 'k' || event.key === 'K') {
+        togglePlay();
+    }
+    if (event.key === 'l' || event.key === 'L') {
+        videoPlayer.value.currentTime += 10;
+    }
+    if (event.key === 'j' || event.key === 'J') {
+        videoPlayer.value.currentTime -= 10;
+    }
+};
+
+const handleVolumeUp = () => {
+    if (volume.value < 1) {
+        toggleVideoControlsOnForTwoSeconds();
+        volume.value += 0.1;
+    } else {
+        toggleVideoControlsOnForTwoSeconds();
+    }
+};
+
+const handleVolumeDown = () => {
+    if (volume.value > 0) {
+        toggleVideoControlsOnForTwoSeconds();
+        volume.value -= 0.1;
+    } else {
+        toggleVideoControlsOnForTwoSeconds();
     }
 };
 
