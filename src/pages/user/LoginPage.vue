@@ -1,19 +1,6 @@
 <template>
-    <div
-        style="
-            height: 100vh;
-            display: flex;
-            background-image: linear-gradient(
-                    to right,
-                    rgba(0, 0, 0, 0.85),
-                    rgba(0, 0, 0, 0.95)
-                ),
-                url('collaboration_students.png');
-            background-repeat: no-repeat;
-            background-size: cover;
-        "
-    >
-        <div style="width: 60%; padding: 3%; padding-left: 5%">
+    <div class="row">
+        <div class="col-6 q-ma-xl" v-show="!$q.screen.lt.md">
             <div style="font-size: 2.5em; color: white; font-weight: 700">
                 Bienvenido a Collaborative Questions
             </div>
@@ -73,20 +60,18 @@
                 </div>
             </div>
         </div>
-        <div
-            style="
-                height: 100%;
-                width: 40%;
-                padding-top: 20vh;
-                padding-right: 5%;
-                padding-left: 10%;
-            "
-        >
-            <LoginComponent></LoginComponent>
+        <div class="col q-ma-xl">
+            <Suspense>
+                <LoginComponent></LoginComponent>
+            </Suspense>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import { useQuasar } from 'quasar';
+
+const $q = useQuasar();
+
 import LoginComponent from 'src/components/user/LoginComponent.vue';
 </script>

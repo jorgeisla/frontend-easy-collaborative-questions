@@ -8,4 +8,8 @@ const validateToken = () => {
     return `${api}/user/validate-token/`;
 };
 
-export { userLogin, validateToken };
+const changePassword = () => {
+    return `${api}/user/change-password/`;
+};
+
+export { userLogin, validateToken, changePassword };

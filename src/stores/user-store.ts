@@ -40,6 +40,8 @@ export const userStore = defineStore('login', {
             this.setToken('');
             this.setUsername('');
             this.setEmail('');
+            this.setActualVideoSession(0);
+            this.setReminderPopUp(true);
         },
     },
     persist: true,
